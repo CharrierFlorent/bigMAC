@@ -1,7 +1,15 @@
 #include "bigmac.h"
 
+
+/***
+ * Crée un csp bivalent à partir d'un csp et d'une liste d'affectation
+ * paramètre : - csp : un csp
+ *             - affectation : l'affectation courante de toute les variables
+ *             - niveau : la profondeur dans l'arbre de recherche
+ *             - size : taille du domaine
+ * sortie : retourne un csp binaire bivalent.
+ ***/
 CSP * create_csp(CSP * csp, int * affectation, int niveau, int size){
-    int domain_size = 2;
     CSP * csp_bivalent = init_empty_csp(csp->max_var, csp->Domain->max_domain);
     for(int i = 0; i < csp->max_var; i++)
         for(int j = 0; j < csp->Domain->max_domain; j++){
@@ -11,18 +19,15 @@ CSP * create_csp(CSP * csp, int * affectation, int niveau, int size){
                         csp_bivalent->Domain->domain_matrix[i][j] = 1;
         }
 
-	for(int i = 0; i < csp->max_var; i++)
+    for(int i = 0; i < csp->max_var; i++)
         for(int j = 0; j < csp->max_var; j++)
             if(affectation[i] >0 && affectation[j] > 0){
                 if(csp->matrice_contraintes->constraint_matrix[i][j]){
-                    //printf ("contrainte entre %d et %d\n", i, j);
                     csp_bivalent->matrice_contraintes->constraint_matrix[i][j] = init_constraint(csp->Domain->max_domain);
                     csp_bivalent->matrice_contraintes->constraint_matrix[i][j]->max_domain = csp->Domain->max_domain;
                     for(int k = 0; k < csp->Domain->max_domain;k++)
                         for(int t = 0; t < csp->Domain->max_domain; t++){
-                            //printf ("k = %d, t = %d\n",k,t);
                             csp_bivalent->matrice_contraintes->constraint_matrix[i][j]->relations[k][t] = 0;
-                            //printf ("if = %d\n", ( (k == (2*(affectation[niveau]-1))) || (k == (2*(affectation[niveau]-1)+1))) && (t == (2*(affectation[niveau]-1)) || (t == (2*(affectation[niveau]-1)+1))));
                             if(( (k == (2*(affectation[niveau]-1))) || (k == (2*(affectation[niveau]-1)+1))) && (t == (2*(affectation[niveau]-1)) || (t == (2*(affectation[niveau]-1)+1))))
                                 csp_bivalent->matrice_contraintes->constraint_matrix[i][j]->relations[k][t] = csp->matrice_contraintes->constraint_matrix[i][j]->relations[k][t];
                         }
@@ -35,49 +40,50 @@ CSP * create_csp(CSP * csp, int * affectation, int niveau, int size){
     return csp_bivalent;
 }
 
-
+/***
+ * Verifie que le csp est SPC
+ * paramètre : - csp : un csp
+ *             - affectation : l'affectation courante de toute les variables
+ *             - niveau : la profondeur dans l'arbre de recherche
+ *             - size : taille du domaine
+ * sortie : retourne 1 si le csp est SPC. 0 sinon
+ ***/
 int consistent(CSP * csp, int * affectation, int niveau, int size){
-    //printf("creatipon?\n");
+
     CSP * csp_bivalent = create_csp(csp,affectation, niveau, size);
-    //printf ("gello...\n");
     int vide = 1;
     AC8(csp_bivalent,NULL);
-    //printf("fin AC8");
-    /*for(int i=0; i < csp_bivalent->max_var; i++)
-		for (int j=0; j<csp_bivalent->Domain->max_domain; j++)
-				printf("domain[%d][%d] = %d \n",i, j, csp_bivalent->Domain->domain_matrix[i][j]);*/
     PC8(csp_bivalent);
-    //print_relation(csp_bivalent);
-    /* soit modifier AC8/PC8, soit tester ici les domaines/relations ,si l'un est vide, alors c'est plus consistent et on retourne 0 */
+
 
     for (int i=0; i < niveau+1; i++)
     {
-		//printf ("i = %d\n",i);
-		vide = 1;
-		for (int j=0; j < csp_bivalent->Domain->max_domain; j++)
-			if (csp_bivalent->Domain->domain_matrix[i][j] == 1)
-				vide = 0;
-		if (vide == 1)
-			return 0;
-	}
+        //printf ("i = %d\n",i);
+        vide = 1;
+        for (int j=0; j < csp_bivalent->Domain->max_domain; j++)
+            if (csp_bivalent->Domain->domain_matrix[i][j] == 1)
+                vide = 0;
+        if (vide == 1)
+            return 0;
+    }
 
-	for (int i=0; i < niveau; i++)
-		for (int k=0; k < niveau+1; k++)
-		{
-			//printf ("k = %d\n",k);
-			vide = 1;
-			if (csp_bivalent->matrice_contraintes->constraint_matrix[i][k] == NULL)
-				vide = 0;
-			else
-			{
-				for (int j=0; j < csp_bivalent->Domain->max_domain; j++)
-					for (int l=0; l < csp_bivalent->Domain->max_domain; l++)
-						if (csp_bivalent->matrice_contraintes->constraint_matrix[i][k]->relations[j][l] == 1)
-							vide = 0;
-			}
-			if (vide == 1)
-				return 0;
-		}
+    for (int i=0; i < niveau; i++)
+        for (int k=0; k < niveau+1; k++)
+        {
+            //printf ("k = %d\n",k);
+            vide = 1;
+            if (csp_bivalent->matrice_contraintes->constraint_matrix[i][k] == NULL)
+                vide = 0;
+            else
+            {
+                for (int j=0; j < csp_bivalent->Domain->max_domain; j++)
+                    for (int l=0; l < csp_bivalent->Domain->max_domain; l++)
+                        if (csp_bivalent->matrice_contraintes->constraint_matrix[i][k]->relations[j][l] == 1)
+                            vide = 0;
+            }
+            if (vide == 1)
+                return 0;
+        }
 
     //free_csp(csp_bivalent);
     return 1;
@@ -90,6 +96,13 @@ int not_complete(int * array, int size){
     return 0;
 }
 
+/***
+ * Affecte à la prochaine variables une paire de valeurs
+ * paramètre   - affectation : l'affectation courante de toute les variables
+ *             - niveau : la profondeur courante dans l'arbre de recherche
+ *             - size : taille du domaine
+ * sortie : retourne 1 si l'affectation est possible. 0 sinon (domaine exploré entierement)
+ ***/
 int affecter(int * affectation, int niveau, int size){
     if(size%2 == 0){
         if(affectation[niveau]+1 > (int)size/2)
@@ -102,6 +115,11 @@ int affecter(int * affectation, int niveau, int size){
     return 1;
 }
 
+/***
+ * Permet de tester si une solution est valide.
+ * paramètre : - csp : un csp
+ *             - solution : un tableau contenant une solutions au csp que l'on veut tester
+ ***/
 int verify2(CSP * csp, int * solution){
     for(int i = 0; i < csp->max_var; i++)
         for(int j = 0; j < csp->max_var; j++){
@@ -113,28 +131,30 @@ int verify2(CSP * csp, int * solution){
     return 1;
 }
 
+/***
+ * Résoud le csp bivalent final
+ * paramètre : - csp : un csp
+ ***/
 void solve_csp(CSP * csp){
     CSP * csp2 = create_csp_by_copy(csp);
     int * inst = calloc(csp->max_var,sizeof(int));
+    Forward_Checking(csp,inst, MIN_DOMAINE);
 
-
-    if(BT(csp,inst, 0)){
-        printf("solution : \n");
-        for(int i=0; i < csp->max_var; i++)
-            for (int j=0; j<csp->Domain->max_domain; j++)
-                if(csp->Domain->domain_matrix[i][j] == 1)
-                    printf("x%d = %d \n",i, j);
 
         if(verify2(csp2,inst))
             printf("BM : correct!\n");
         else
             printf("BM : Incorrect!\n");
-    }
+    
 
 }
 
+/***
+ * Execute l'algorithme du bigMAC sur un csp donné
+ * paramètre : - csp : un csp
+ ***/
 void bigmac(CSP *csp){
-	printf ("\n*****************************BIGMAC***************************\n");
+    printf ("\n*****************************BIGMAC***************************\n");
     CSP * bigmac_csp;
     int niveau = 0;
     int succes_affectation, succes_consistence;
@@ -155,12 +175,10 @@ void bigmac(CSP *csp){
      * On s'arrete quand on a explorer tout l'arbre
      */
     while(not_complete(affectation, max_var) || !succes_consistence){
-		//printf ("niveau = %d\n", niveau);
-		succes_affectation = affecter(affectation, niveau, taille_domaine);
-        //printf ("succes_affectation = %d\n", succes_affectation);
+        succes_affectation = affecter(affectation, niveau, taille_domaine);
         if(!succes_affectation){
+            affectation[niveau] = 0;
             niveau--;
-            //printf("je remonte\n");
             if(niveau < 0){
                 printf("pas de solutions\n");
                 return;
@@ -168,28 +186,16 @@ void bigmac(CSP *csp){
         }
         else
         {
-			//printf ("blouf!!!!!!!!!!!!\n");
-			succes_consistence = consistent(csp, affectation, niveau, taille_domaine);
-			//printf ("succes consistence = %d\n", succes_consistence);
-			if(succes_consistence)
-				niveau++;
-			else{
-				continue;
-			}
-		}
+            succes_consistence = consistent(csp, affectation, niveau, taille_domaine);
+            if(succes_consistence)
+                niveau++;
+            else{
+                continue;
+            }
+        }
     }
-    printf ("I'm out ! \n");
-    printf ("niveau = %d\n", niveau);
-    for(int i = 0; i < csp->max_var;i++)
-        printf("%d ",affectation[i]);
-    printf("\n");
+
     bigmac_csp = create_csp(csp, affectation, niveau-1, taille_domaine);
-    printf ("creer\n");
-    /*for(int i=0; i < bigmac_csp->max_var; i++)
-		for (int j=0; j<bigmac_csp->Domain->max_domain; j++)
-				printf("domain[%d][%d] = %d \n",i, j, bigmac_csp->Domain->domain_matrix[i][j]);*/
-	print_matrix(bigmac_csp->Domain->domain_matrix, bigmac_csp->max_var, bigmac_csp->Domain->max_domain);
-	//print_relation(bigmac_csp);
     solve_csp(bigmac_csp);
 }
 

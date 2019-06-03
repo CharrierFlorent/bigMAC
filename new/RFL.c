@@ -13,7 +13,7 @@
  * 			   - heuristique est l'heuritisque utilisé pour le choix des variables
  * sortie : génère la solution au probleme sur la sortie standart
  */
-void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
+void RFL (CSP *probleme , HEURISTIQUE heuristique)
 {
 	printf ("**************RFL**************\n");
 
@@ -42,21 +42,12 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 				if (probleme->Domain->taille_domaine[variable_courante] != 1)
 					probleme->Domain->taille_domaine[variable_courante]--;
 				
-		        for(int d = 0; d < probleme->Domain->max_domain; d++)
-		            if(d != valeur_courante && probleme->Domain->domain_matrix[variable_courante][d] == 1)
-		                probleme->Domain->domain_matrix[variable_courante][d] = -2;
-
 				// on applique un algorithme de consistance d'arc
 				AC8(probleme, var_status);
 				
 				// si aucun domaine n'est vide on affecte cette valeur à la variable courante, sinon on passe à la prochaine valeur
 				if (cherche_domaine_vide(probleme->Domain->taille_domaine, probleme->Domain->max_var, var_status) == 0)
 					affect = 1;
-				else{
-					for(int d = 0; d < probleme->Domain->max_domain; d++)
-	            		if(d != valeur_courante && probleme->Domain->domain_matrix[variable_courante][d] == -2)
-	                		probleme->Domain->domain_matrix[variable_courante][d] = 1;
-				}
 			}
 		}
 		if (affect == 0)
@@ -70,40 +61,23 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 
 			// on réinitialise le domaine de la variable courante
 			for (int j=0; j<probleme->Domain->max_domain; j++)
-				if (probleme->Domain->domain_matrix[variable_courante][j] == -2 || probleme->Domain->domain_matrix[variable_courante][j] == -3)
+				if (probleme->Domain->domain_matrix[variable_courante][j] == -2)
 				{
 					probleme->Domain->domain_matrix[variable_courante][j] = 1;
 					probleme->Domain->taille_domaine[variable_courante]++;
 				}
-
-			for (int var_contrainte=0; var_contrainte < probleme->max_var && var_contrainte < variable_courante; var_contrainte++)
-		    {
-				if (probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte] != NULL)
-		        {
-					Constraint * current_constraint = probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte];
-					for (int i=0; i<current_constraint->max_domain; i++)
-						if (probleme->Domain->domain_matrix[var_contrainte][i] == -1)
-							probleme->Domain->domain_matrix[var_contrainte][i] = 1;
-		        }
-		    }
-
 			var_status[variable_courante] = 0;
 			// "retour arrière"
 			variable_courante = tab_order_var[nb_var_instancie-1];
 			nb_var_instancie--;
 			
 			// on réinitialise le domaine de la variable précédente et on enleve du domaine la précédente valeur inconsistante
-			int cpt = 0;
-			for (int j=0; j<probleme->Domain->max_domain; j++){
+			for (int j=0; j<probleme->Domain->max_domain; j++)
 				if (probleme->Domain->domain_matrix[variable_courante][j] == -2)
 					probleme->Domain->domain_matrix[variable_courante][j] = 1;
 				else if (probleme->Domain->domain_matrix[variable_courante][j] == 1)
-					probleme->Domain->domain_matrix[variable_courante][j] = -3;
-
-				if(probleme->Domain->domain_matrix[variable_courante][j] == -3)
-					cpt++;
-			}
-			probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain - cpt;
+					probleme->Domain->domain_matrix[variable_courante][j] = -2;
+			probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain;
 		}
 		else
 		{
@@ -123,10 +97,8 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 	printf("solution : \n");
 	for(int i=0; i < probleme->max_var; i++)
 		for (int j=0; j<probleme->Domain->max_domain; j++)
-			if (probleme->Domain->domain_matrix[i][j] == 1){
-				sol[i] = j;
+			if (probleme->Domain->domain_matrix[i][j] == 1)
 				printf("x%d = %d \n",i, j);
-			}
 
 	// on reinitialise le domaine
 	for(int i=0; i < probleme->max_var; i++)

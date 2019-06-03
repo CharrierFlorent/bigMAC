@@ -108,7 +108,7 @@ int main(){
         CSP * csp4 = create_csp_by_copy(csp);
         //test_AC8(csp);
         //test_PC8(csp);
-        test_BT(csp4);
+        //test_BT(csp4);
 
         test_FC(csp2);
         //test_AC_PC(csp);
