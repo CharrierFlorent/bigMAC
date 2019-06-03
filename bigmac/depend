@@ -1,0 +1,12 @@
+structure.o: structure.c structure.h
+BT.o: BT.c BT.h structure.h generateur.h
+generateur.o: generateur.c generateur.h structure.h
+AC8.o: AC8.c AC8.h structure.h list.h
+PC8.o: PC8.c PC8.h structure.h list.h AC8.h
+list.o: list.c list.h
+bigmac.o: bigmac.c bigmac.h BT.h structure.h generateur.h AC8.h list.h \
+ PC8.h
+main.o: main.c bigmac.h BT.h structure.h generateur.h AC8.h list.h PC8.h \
+ FC.h RFL.h
+RFL.o: RFL.c RFL.h generateur.h structure.h FC.h AC8.h list.h
+FC.o: FC.c FC.h generateur.h structure.h
