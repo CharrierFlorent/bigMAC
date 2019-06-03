@@ -25,7 +25,7 @@ void test_BT(CSP * csp){
 	CSP * csp3 = create_csp_by_copy(csp);
     /*printf("########### V1 ################\n");
     BackTrack(csp);*/
-    printf("########### V2 ################\n");
+    printf("########### BT ################\n");
     int * inst = calloc(csp->max_var,sizeof(int));
 
     if(BT(csp2,inst, 0)){
@@ -37,9 +37,12 @@ void test_BT(CSP * csp){
 
         if(verify(csp3,inst))
             printf("BT : correct!\n");
+        else
+        	printf("BT : Incorrect!\n");
     }
     free_csp(csp2);
     free_csp(csp3);
+    printf("fin\n");
 }
 
 void test_FC(CSP * csp){
@@ -48,6 +51,8 @@ void test_FC(CSP * csp){
     Forward_Checking(csp,inst, MIN_DOMAINE);
     if(verify(csp2,inst))
         printf("FC : correct!\n");
+    else
+    	printf("FC : Incorrect!\n");
     free_csp(csp2);
 }
 
@@ -88,6 +93,8 @@ void test_RFL (CSP * csp)
 	RFL (csp, inst, MIN_DOMAINE);
 	if(verify(csp2,inst))
         printf("RFL : correct!\n");
+    else
+    	printf("RFL : Incorrect!\n");
     free_csp(csp2);
 }
 
@@ -98,14 +105,16 @@ int main(){
         CSP * csp = generer_probleme();
         CSP * csp2 = create_csp_by_copy(csp);
         CSP * csp3 = create_csp_by_copy(csp);
+        CSP * csp4 = create_csp_by_copy(csp);
         //test_AC8(csp);
         //test_PC8(csp);
-        //test_BT(csp);
+        test_BT(csp4);
 
         test_FC(csp2);
         //test_AC_PC(csp);
         test_RFL (csp3);
         bigmac(csp);
+        free_csp(csp4);
         free_csp(csp);
         free_csp(csp2);
         free_csp(csp3);

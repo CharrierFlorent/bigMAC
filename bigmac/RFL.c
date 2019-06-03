@@ -75,6 +75,18 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 					probleme->Domain->domain_matrix[variable_courante][j] = 1;
 					probleme->Domain->taille_domaine[variable_courante]++;
 				}
+
+			for (int var_contrainte=0; var_contrainte < probleme->max_var && var_contrainte < variable_courante; var_contrainte++)
+		    {
+				if (probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte] != NULL)
+		        {
+					Constraint * current_constraint = probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte];
+					for (int i=0; i<current_constraint->max_domain; i++)
+						if (probleme->Domain->domain_matrix[var_contrainte][i] == -1)
+							probleme->Domain->domain_matrix[var_contrainte][i] == 1;
+		        }
+		    }
+
 			var_status[variable_courante] = 0;
 			// "retour arrière"
 			variable_courante = tab_order_var[nb_var_instancie-1];

@@ -233,8 +233,10 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 		{
 			// si on a réussit à affecter une valeur à la variable alors on supprime toute les autres valeurs du domaine de la variable
 			for (int j=0; j<probleme->Domain->max_domain; j++)
-				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante-1) // attention ici pas sur
+				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante-1){ // attention ici pas sur
 					probleme->Domain->domain_matrix[variable_courante][j] = -2;
+				}
+			solution[variable_courante] = valeur_courante-1;
 			probleme->Domain->taille_domaine[variable_courante] = 1;
 			// on choisit la prochaine variable
 			variable_courante = choix_variable (probleme, heuristique, var_status, nb_var_instancie);
@@ -253,11 +255,8 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 	// affichage de la solution
 	printf("solution : \n");
 	for(int i=0; i < probleme->max_var; i++)
-		for (int j=0; j<probleme->Domain->max_domain; j++)
-			if (probleme->Domain->domain_matrix[i][j] == 1){
-				solution[i] = j;
-				printf("x%d = %d \n",i, j);
-			}
+		printf("x%d = %d \n",i, solution[i]);
+			
 
 	// on reinitialise le domaine
 	for(int i=0; i < probleme->max_var; i++)
