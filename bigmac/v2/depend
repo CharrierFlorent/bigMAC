@@ -1,0 +1,3 @@
+structure.o: structure.c structure.h
+generateur.o: generateur.c generateur.h structure.h
+main.o: main.c generateur.h structure.h

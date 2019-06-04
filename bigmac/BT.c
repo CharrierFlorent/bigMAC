@@ -12,6 +12,8 @@
  * 			   - valeur_courante : la valeur courante de la variable courante
  * sortie : retourne 1 si consistant, 0 sinon
  */
+int noeud_BT = 0;
+
 int consistant (CSP *probleme, int variable_courante, int valeur_courante)
 {
 	for (int var_contrainte=0; var_contrainte < probleme->max_var && var_contrainte < variable_courante; var_contrainte++)
@@ -108,7 +110,7 @@ void BackTrack (CSP *probleme)
 
 int BT(CSP * csp, int * instatiation, int profondeur){
     if(profondeur == csp->max_var){
-        //printf("solution ! \n");
+        printf("noeud_BT %d \n", noeud_BT);
         return 1;
     }
     for(int v = 0; v < csp->Domain->max_domain; v++){
@@ -119,6 +121,7 @@ int BT(CSP * csp, int * instatiation, int profondeur){
 
 	        if(consistant(csp, profondeur, v)){
 	            instatiation[profondeur] = v;
+	            noeud_BT++;
 	            if(BT(csp, instatiation, profondeur+1))
 	                return 1;
 	        }

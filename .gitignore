@@ -4,6 +4,7 @@
 .project
 .settings/
 .new/
+.old/
 #files being edited
 *~
 
@@ -14,6 +15,8 @@
 *.lss
 *.map
 *.sym
+
+bigMAC.zip
 
 # I keep these, since I prefer having the reference of the final build
 # *.elf

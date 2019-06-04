@@ -101,14 +101,31 @@ void test_RFL (CSP * csp)
 int main(){
 
 
-    while(1){
+    //while(1){
+
+
+
+
         CSP * csp = generer_probleme();
+        
+
+        printf("\n");
+        print_matrix(csp->Domain->domain_matrix, csp->max_var, csp->Domain->max_domain);
+        //print_relation(csp_bivalent);
+        printf("\n");
+
+        printf("\n");
+        //print_matrix(csp_bivalent->Domain->domain_matrix, niveau+1, csp_bivalent->Domain->max_domain);
+        print_relation(csp);
+        printf("\n");
+        
+
         CSP * csp2 = create_csp_by_copy(csp);
         CSP * csp3 = create_csp_by_copy(csp);
         CSP * csp4 = create_csp_by_copy(csp);
         //test_AC8(csp);
         //test_PC8(csp);
-        //test_BT(csp4);
+        test_BT(csp4);
 
         test_FC(csp2);
         //test_AC_PC(csp);
@@ -118,6 +135,6 @@ int main(){
         free_csp(csp);
         free_csp(csp2);
         free_csp(csp3);
-    }
+    //}
 	return 0;
 }
