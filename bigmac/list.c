@@ -23,7 +23,7 @@ List * get_next(List *list){
  * sortie : Un pointer List sur l'élément crée
  */
 List * create_list(void *value){
-    List *list = malloc(sizeof(list));
+    List *list = malloc(sizeof(list)+3*sizeof(int));
     if (list){
         list->value = value;
         list->next = NULL;

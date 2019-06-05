@@ -110,7 +110,6 @@ void BackTrack (CSP *probleme)
 
 int BT(CSP * csp, int * instatiation, int profondeur){
     if(profondeur == csp->max_var){
-        printf("noeud_BT %d \n", noeud_BT);
         return 1;
     }
     for(int v = 0; v < csp->Domain->max_domain; v++){
@@ -118,17 +117,17 @@ int BT(CSP * csp, int * instatiation, int profondeur){
 	        for(int d = 0; d < csp->Domain->max_domain; d++)
 	            if(d != v && csp->Domain->domain_matrix[profondeur][d] == 1)
 	                csp->Domain->domain_matrix[profondeur][d] = -2;
-
+	        noeud_BT++;
 	        if(consistant(csp, profondeur, v)){
 	            instatiation[profondeur] = v;
-	            noeud_BT++;
 	            if(BT(csp, instatiation, profondeur+1))
 	                return 1;
 	        }
 
 	        for(int d = 0; d < csp->Domain->max_domain; d++)
-	            if(d != v && csp->Domain->domain_matrix[profondeur][d] == -2)
+	            if(csp->Domain->domain_matrix[profondeur][d] == -2)
 	                csp->Domain->domain_matrix[profondeur][d] = 1;
+
 	    }
     }
     return 0;

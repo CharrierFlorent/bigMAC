@@ -7,18 +7,11 @@
 #include "AC8.h"
 #include "PC8.h"
 #include "RFL.h"
-//#include <windows.h>
 
-int verify(CSP * csp, int * solution){
-    for(int i = 0; i < csp->max_var; i++)
-        for(int j = 0; j < csp->max_var; j++){
-                if(csp->matrice_contraintes->constraint_matrix[i][j]){
-                    if(!csp->matrice_contraintes->constraint_matrix[i][j]->relations[solution[i]][solution[j]])
-                        return 0;
-                }
-        }
-    return 1;
-}
+extern int noeud_BM;
+extern int noeud_FC;
+extern int noeud_BT;
+
 
 void test_BT(CSP * csp){
 	CSP * csp2 = create_csp_by_copy(csp);
@@ -42,26 +35,50 @@ void test_BT(CSP * csp){
     }
     free_csp(csp2);
     free_csp(csp3);
-    printf("fin\n");
+    printf("noeud explores BT %d\n", noeud_BT);   
 }
 
 void test_FC(CSP * csp){
+    printf("FC\n");
     int * inst = calloc(csp->max_var,sizeof(int));
+    int * var = calloc(csp->max_var,sizeof(int));
     CSP * csp2 = create_csp_by_copy(csp);
-    Forward_Checking(csp,inst, MIN_DOMAINE);
-    if(verify(csp2,inst))
-        printf("FC : correct!\n");
+    //Forward_Checking(csp, inst, 42);
+    if(FC(csp, inst, var, 0)){
+        for(int i = 0; i < csp->max_var;i++)
+            printf("x%d = %d \n", i, inst[i]);
+
+        if(verify(csp2,inst))
+            printf("FC : correct!\n");
+        else
+        	printf("FC : Incorrect!\n");
+        }
+    free_csp(csp2);
+    printf("noeud explores FC %d\n", noeud_FC);   
+}
+
+void test_RFL (CSP * csp)
+{
+	int * inst = calloc(csp->max_var,sizeof(int));
+	CSP * csp2 = create_csp_by_copy(csp);
+	RFL (csp, inst, MIN_DOMAINE);
+	if(verify(csp2,inst))
+        printf("RFL : correct!\n");
     else
-    	printf("FC : Incorrect!\n");
+    	printf("RFL : Incorrect!\n");
     free_csp(csp2);
 }
+
+void test_bigmac(CSP * csp){
+    bigmac(csp);
+    printf("noeud explores BM %d\n", noeud_BM);    
+}
+
 
 void test_PC8(CSP * csp){
     //test_BT(csp);
     printf("Domaine avant PC8\n");
     //print_relation(csp);
-    printf("#########################################################################################################\n");
-    printf("#########################################################################################################\n");
     printf("#########################################################################################################\n");
     PC8(csp);
     printf("Domaine après PC8\n");
@@ -86,55 +103,31 @@ void test_AC_PC(CSP * csp){
     test_BT(csp);
 }
 
-void test_RFL (CSP * csp)
-{
-	int * inst = calloc(csp->max_var,sizeof(int));
-	CSP * csp2 = create_csp_by_copy(csp);
-	RFL (csp, inst, MIN_DOMAINE);
-	if(verify(csp2,inst))
-        printf("RFL : correct!\n");
-    else
-    	printf("RFL : Incorrect!\n");
-    free_csp(csp2);
-}
-
 int main(){
 
 
-    //while(1){
-
-
-
-
-        CSP * csp = generer_probleme();
+//    while(1){
+        CSP * csp1 = generer_probleme();
+        print_csp(csp1);
         
-
-        printf("\n");
-        print_matrix(csp->Domain->domain_matrix, csp->max_var, csp->Domain->max_domain);
-        //print_relation(csp_bivalent);
-        printf("\n");
-
-        printf("\n");
-        //print_matrix(csp_bivalent->Domain->domain_matrix, niveau+1, csp_bivalent->Domain->max_domain);
-        print_relation(csp);
-        printf("\n");
+        CSP * csp2 = create_csp_by_copy(csp1);
+        CSP * csp3 = create_csp_by_copy(csp1);
+        CSP * csp4 = create_csp_by_copy(csp1);
         
+        test_BT    (csp1);
+        test_FC    (csp2);
+        test_RFL   (csp3);
+        test_bigmac(csp4);
 
-        CSP * csp2 = create_csp_by_copy(csp);
-        CSP * csp3 = create_csp_by_copy(csp);
-        CSP * csp4 = create_csp_by_copy(csp);
-        //test_AC8(csp);
-        //test_PC8(csp);
-        test_BT(csp4);
 
-        test_FC(csp2);
-        //test_AC_PC(csp);
-        test_RFL (csp3);
-        bigmac(csp);
-        free_csp(csp4);
-        free_csp(csp);
+        //test_AC_PC(csp1);
+        //test_AC8(csp1);
+        //test_PC8(csp1);
+
+        free_csp(csp1);
         free_csp(csp2);
         free_csp(csp3);
+        free_csp(csp4);
     //}
 	return 0;
 }

@@ -5,7 +5,7 @@
 #include "FC.h"
 
 
-
+int noeud_FC = 0;
 /***
  * Parcourt chaque variable et cherche si une variable a un domaine vide
  * paramètres : - taille_domaine : un tableau qui contient la taille du domaine de chaque variable
@@ -76,9 +76,7 @@ int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_
 			}
 			break;
 		default:
-			if (nb_var_instancie == 0)
-				var = 0;
-			else var = nb_var_instancie + 1;
+			var = nb_var_instancie + 1;
 			break;
 
 	}
@@ -100,9 +98,8 @@ void reinitialise_domaine (CSP *probleme, int variable_courante, int valeur_cour
 		if (status[var_contrainte] == 0)
 			if (probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte] != NULL)
 			{
-				Constraint * current_constraint = probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte];
-				for (int index=0; index < current_constraint->max_domain; index++)
-					if (current_constraint->relations[valeur_courante][index] == 0 && probleme->Domain->domain_matrix[var_contrainte][index] == -1)
+				for (int index=0; index < probleme->Domain->max_domain; index++)
+					if ( probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte]->relations[valeur_courante][index] == 0 && probleme->Domain->domain_matrix[var_contrainte][index] == -1)
 					{
 						probleme->Domain->domain_matrix[var_contrainte][index] = 1;
 						probleme->Domain->taille_domaine[var_contrainte]++;
@@ -125,12 +122,11 @@ void filtre_domaine (CSP *probleme, int variable_courante, int valeur_courante, 
     {
 		if (status[var_contrainte] == 0)
 		// s'il existe une contrainte entre la variable courante et les autres variables
-			if (probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte] != NULL)
+			if (probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte])
 			{
-				Constraint * current_constraint = probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte];
 				// pour toutes les valeurs du domaine des autres variables on enlève les valeurs devenues inconsitantes
-				for (int index=0; index < current_constraint->max_domain; index++)
-					if (current_constraint->relations[valeur_courante][index] == 0 && probleme->Domain->domain_matrix[var_contrainte][index] == 1)
+				for (int index=0; index < probleme->Domain->max_domain; index++)
+					if (probleme->matrice_contraintes->constraint_matrix[variable_courante][var_contrainte]->relations[valeur_courante][index] == 0 && probleme->Domain->domain_matrix[var_contrainte][index] == 1)
 					{
 						probleme->Domain->domain_matrix[var_contrainte][index] = -1;
 						probleme->Domain->taille_domaine[var_contrainte]--;
@@ -158,18 +154,18 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 	// Initialisation
 	for (int i=0; i<probleme->max_var; i++){
 		var_status[i] = 0;
-        tab_order_var[i] = 0;
+        tab_order_var[i] = -1;
 	}
 	int nb_var_instancie = 0; 	// correspond aux nombres de variables instanciées par Forward Checking
-    variable_courante = choix_variable(probleme, heuristique, var_status, nb_var_instancie);
+    variable_courante = 0;//choix_variable(probleme, heuristique, var_status, nb_var_instancie);
     tab_order_var[nb_var_instancie] = variable_courante;
-
 	while (nb_var_instancie < probleme->max_var)
 	{
+		//printf("variable_courante %d\n", variable_courante);
 		var_status[variable_courante] = 1;
 		affect = 0;
 		//on instancie la variable courante
-		for (valeur_courante = 0; valeur_courante < probleme->Domain->max_domain && affect == 0; valeur_courante++)
+		for (valeur_courante = 0; valeur_courante < probleme->Domain->max_domain; valeur_courante++)
 		{
 		    //printf("variable %d\n", variable_courante);
 			if (probleme->Domain->domain_matrix[variable_courante][valeur_courante] == 1)
@@ -180,14 +176,17 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 				filtre_domaine (probleme, variable_courante, valeur_courante, var_status);
 
                 // si aucun domaine n'est vide on affecte cette valeur à la variable courante, sinon on réinitialise les domaines et on passe à la prochaine valeur
-				if (cherche_domaine_vide(probleme->Domain->taille_domaine, probleme->Domain->max_var, var_status) == 0)
+				if (cherche_domaine_vide(probleme->Domain->taille_domaine, probleme->Domain->max_var, var_status) == 0){
 					affect = 1;
+					break;
+				}
 				else
                     reinitialise_domaine (probleme, variable_courante, valeur_courante, var_status);
 			}
 		}
 		if (affect == 0)
 		{
+			//printf("affectation ratée %d nb_var_instancie %d\n", variable_courante, nb_var_instancie);
 			// si on revient au début et qu'on a pas réussi à affecter la variable alors pas de solution
 			if (variable_courante == tab_order_var[0])
             {
@@ -198,12 +197,13 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 			// "retour arrière"
 
             for (int j=0; j<probleme->Domain->max_domain; j++)
-				if (probleme->Domain->domain_matrix[variable_courante][j] == -3 || probleme->Domain->domain_matrix[variable_courante][j] == -2)
+				if (probleme->Domain->domain_matrix[variable_courante][j] == -3)
 					probleme->Domain->domain_matrix[variable_courante][j] = 1;
 			probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain;
             //tab_order_var[nb_var_instancie] = 0;
 			variable_courante = tab_order_var[nb_var_instancie-1];
-			tab_order_var[nb_var_instancie-1] = 0;
+			tab_order_var[nb_var_instancie] = -1;
+			//printf("variable %d\n", variable_courante);
 			//printf("affecte tableau %d\n", variable_courante);
 			if(var_status[variable_courante]){
                 var_status[variable_courante] = 0;
@@ -217,26 +217,39 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 			// on réinitialise le domaine de la variable précédente et on enleve du domaine la précédente valeur inconsistante
 			int taille = 0;
             for (int j=0; j<probleme->Domain->max_domain; j++){
-				if (probleme->Domain->domain_matrix[variable_courante][j] == -2)
+				if (probleme->Domain->domain_matrix[variable_courante][j] == -2){
 					probleme->Domain->domain_matrix[variable_courante][j] = 1;
-				else if (probleme->Domain->domain_matrix[variable_courante][j] == 1){
-					reinitialise_domaine (probleme, variable_courante, j, var_status);
+				}
+            }
+			for (int j=0; j<probleme->Domain->max_domain; j++){
+				if (probleme->Domain->domain_matrix[variable_courante][j] == 1){
+					//reinitialise_domaine (probleme, variable_courante, j, var_status);
 					probleme->Domain->domain_matrix[variable_courante][j] = -3;
 				}
-                if(probleme->Domain->domain_matrix[variable_courante][j] == -3)
+
+                if(probleme->Domain->domain_matrix[variable_courante][j] == -3){
                     taille++;
+                    //printf("aucun ???%d\n " ,taille);
+                }
             }
+
 			probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain-taille;
+			//printf("taille %d\n", probleme->Domain->taille_domaine[variable_courante]);
+			if(probleme->Domain->taille_domaine[variable_courante] == 0){
+				printf("pas de solution\n");
+				return;
+			}
 
 		}
 		else
 		{
+			//printf("affectation reussis %d nb_var_instancie %d\n", variable_courante, nb_var_instancie);
 			// si on a réussit à affecter une valeur à la variable alors on supprime toute les autres valeurs du domaine de la variable
 			for (int j=0; j<probleme->Domain->max_domain; j++)
-				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante-1){ // attention ici pas sur
+				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante){ // attention ici pas sur
 					probleme->Domain->domain_matrix[variable_courante][j] = -2;
 				}
-			solution[variable_courante] = valeur_courante-1;
+			solution[variable_courante] = valeur_courante;
 			probleme->Domain->taille_domaine[variable_courante] = 1;
 			// on choisit la prochaine variable
 			variable_courante = choix_variable (probleme, heuristique, var_status, nb_var_instancie);
@@ -246,8 +259,9 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
                 printf("pas de sol\n");
                 return;
 			}
-			nb_var_instancie++;
+			
 			tab_order_var[nb_var_instancie] = variable_courante;
+			nb_var_instancie++;
 			//printf("affecté fonction %d\n", variable_courante);
 		}
 	}
@@ -266,4 +280,65 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 			if (probleme->Domain->domain_matrix[i][j] != 0)
 				probleme->Domain->domain_matrix[i][j] = 1;
 	}
+}
+
+int check_forward(CSP * csp, int * var_status, int variable_courante, int valeur_courante, int profondeur){
+	int consistant_futur = 1;
+	for(int i = 0; i < csp->max_var;i++){
+		if(var_status[i] == 0 && i != variable_courante && csp->matrice_contraintes->constraint_matrix[variable_courante][i]){
+			while(consistant_futur){
+				for(int v = 0; v < csp->Domain->max_domain; v++){
+					if(csp->Domain->domain_matrix[i][v] == 1){
+						if(csp->matrice_contraintes->constraint_matrix[variable_courante][i]->relations[valeur_courante][v] == 0){
+							csp->Domain->domain_matrix[i][v] = -(profondeur+2);
+							csp->Domain->taille_domaine[i]--;
+						}
+					}
+				}
+				if(csp->Domain->taille_domaine[i] == 0){
+					consistant_futur = 0;
+					return consistant_futur;
+				}
+				break;
+			}
+		}
+	}
+	return consistant_futur;
+}
+
+void restore_domain(CSP * csp, int * var_status, int variable_courante, int profondeur){
+	for(int i = 0; i < csp->max_var;i++){
+		if(var_status[i] == 0 && i != variable_courante && csp->matrice_contraintes->constraint_matrix[variable_courante][i]){
+				for(int v = 0; v < csp->Domain->max_domain; v++){
+					if(csp->Domain->domain_matrix[i][v] == -(profondeur+2)){
+							csp->Domain->domain_matrix[i][v] = 1;
+							csp->Domain->taille_domaine[i]++;
+					}
+				}
+		}
+	}	
+}
+
+int FC(CSP * csp, int * solution, int * var_status, int profondeur){
+
+	if(profondeur == csp->max_var){
+		return 1;
+	}
+	else{
+		var_status[profondeur] = 1;
+		int variable_courante = profondeur;
+		for(int valeur_courante = 0; valeur_courante < csp->Domain->max_domain; valeur_courante++){
+			if (csp->Domain->domain_matrix[variable_courante][valeur_courante] == 1){
+				noeud_FC++;
+             	if (check_forward(csp, var_status, variable_courante, valeur_courante, profondeur)){
+					solution[profondeur] = valeur_courante;
+					if(FC(csp, solution, var_status, profondeur+1))
+						return 1;	
+				}
+                restore_domain(csp, var_status, variable_courante, profondeur);
+			}
+		}
+		var_status[profondeur] = 0;
+	}
+	return 0;
 }

@@ -81,26 +81,9 @@ CSP * create_csp(CSP * csp, int * affectation, int niveau, int size){
  * sortie : retourne 1 si le csp est SPC. 0 sinon
  ***/
 int consistent(CSP * csp, int * affectation, int niveau, int size){
-/*
-    for(int i = 0; i < csp->max_var;i++)
-        printf(" %d ", affectation[i]);
-    printf("\n");
-*/
-
+	
     CSP * csp_bivalent = create_csp(csp,affectation, niveau, size);
     int vide = 1;
-
-/*
-    printf("\n");
-    print_matrix(csp_bivalent->Domain->domain_matrix, niveau+1, csp_bivalent->Domain->max_domain);
-    //print_relation(csp_bivalent);
-    printf("\n");
-
-    printf("\n");
-    //print_matrix(csp_bivalent->Domain->domain_matrix, niveau+1, csp_bivalent->Domain->max_domain);
-    print_relation(csp_bivalent);
-    printf("\n");
-*/
 
     AC8(csp_bivalent,NULL);
     PC8(csp_bivalent);
@@ -163,22 +146,6 @@ int affecter(int * affectation, int niveau, int size){
 }
 
 /***
- * Permet de tester si une solution est valide.
- * paramètre : - csp : un csp
- *             - solution : un tableau contenant une solutions au csp que l'on veut tester
- ***/
-int verify2(CSP * csp, int * solution){
-    for(int i = 0; i < csp->max_var; i++)
-        for(int j = 0; j < csp->max_var; j++){
-                if(csp->matrice_contraintes->constraint_matrix[i][j]){
-                    if(!csp->matrice_contraintes->constraint_matrix[i][j]->relations[solution[i]][solution[j]])
-                        return 0;
-                }
-        }
-    return 1;
-}
-
-/***
  * Résoud le csp bivalent final
  * paramètre : - csp : un csp
  ***/
@@ -186,17 +153,15 @@ void solve_csp(CSP * csp){
     CSP * csp2 = create_csp_by_copy(csp);
     int * inst = calloc(csp->max_var,sizeof(int));
     //Forward_Checking(csp,inst, MIN_DOMAINE);
+	int * var = calloc(csp->max_var,sizeof(int));
 
-
-    if(BT(csp,inst, 0)){
+    if(FC(csp2, inst, var, 0)){
         printf("solution : \n");
         for(int i=0; i < csp->max_var; i++)
-            for (int j=0; j<csp->Domain->max_domain; j++)
-                if(csp->Domain->domain_matrix[i][j] == 1)
-                    printf("x%d = %d \n",i, j);
+            printf("x%d = %d \n",i, inst[i]);
 
 
-        if(verify2(csp2,inst))
+        if(verify(csp2,inst))
             printf("BM : correct!\n");
         else
             printf("BM : Incorrect!\n");
@@ -243,10 +208,11 @@ void bigmac(CSP *csp){
         }
         else
         {
+            noeud_BM++;
             succes_consistence = consistent(csp, affectation, niveau, taille_domaine);
             if(succes_consistence){
                 niveau++;
-                noeud_BM++;
+                
             }
             else{
                 continue;
@@ -254,18 +220,8 @@ void bigmac(CSP *csp){
         }
     }
 
-    for(int i = 0; i < csp->max_var;i++)
-        printf(" %d ", affectation[i]);
-    printf("\n");
-
     bigmac_csp = create_csp(csp, affectation, niveau-1, taille_domaine);
-
-    printf("\n");
-    print_matrix(bigmac_csp->Domain->domain_matrix, niveau,bigmac_csp->Domain->max_domain);
-    printf("\n");
-
     solve_csp(bigmac_csp);
-    printf("noeud explorés %d\n", noeud_BM);
 }
 
 

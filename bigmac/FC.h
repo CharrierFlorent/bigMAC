@@ -8,5 +8,7 @@ int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_
 void reinitialise_domaine (CSP *probleme, int variable_courante, int valeur_courante, int *status);
 void filtre_domaine (CSP *probleme, int variable_courante, int valeur_courante, int *status);
 void Forward_Checking (CSP *probleme, int * solution,  HEURISTIQUE heuristique);
-
+int FC(CSP * csp, int * solution, int * var_status, int profondeur);
+void restore_domain(CSP * csp, int * var_status, int variable_courante, int profondeur);
+int check_forward(CSP * csp, int * var_status, int variable_courante, int valeur_courant, int profondeur);
 #endif

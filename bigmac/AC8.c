@@ -101,9 +101,9 @@ List * check_support(CSP * csp, List * list_ac, int * status_AC, int i, int j, i
 			}
             if(!status_AC[j]){
                 if(!list_ac)
-                    list_ac = append(NULL,j);
+                    list_ac = append(NULL,&j);
                 else
-                    list_ac = append(list_ac,j);
+                    list_ac = append(list_ac,&j);
                 status_AC[j] = 1;
             }
         }
@@ -168,7 +168,7 @@ void AC8(CSP * csp, int *var_status){
     List * list_ac = initialize_AC8(csp, status_ac, var_status);
     //list_ac = list_remove_first(list_ac);
     while(list_ac){
-        i = list_ac->value;
+        i = *((int *)list_ac->value);
         list_ac = list_remove_first(list_ac);
         status_ac[i] = false;
         propagate_AC(csp, list_ac, status_ac,i, var_status);

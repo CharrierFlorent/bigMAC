@@ -114,8 +114,8 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			probleme->Domain->taille_domaine[variable_courante] = 1;
 			// on choisit la prochaine variable
 			variable_courante = choix_variable (probleme, heuristique, var_status, nb_var_instancie);
-			nb_var_instancie++;
 			tab_order_var[nb_var_instancie] = variable_courante;
+			nb_var_instancie++;
 		}
 	}
 	

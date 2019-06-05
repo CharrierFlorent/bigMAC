@@ -149,6 +149,31 @@ void print_relation(CSP * csp){
     }
 }
 
+void print_csp(CSP * csp){
+        printf("\n");
+        printf("Domaine : \n");
+        print_matrix(csp->Domain->domain_matrix, csp->max_var, csp->Domain->max_domain);
+        printf("\nrelations : \n");
+        print_relation(csp);
+        printf("\n");
+}
+
+/***
+ * Permet de tester si une solution est valide.
+ * paramètre : - csp : un csp
+ *             - solution : un tableau contenant une solutions au csp que l'on veut tester
+ ***/
+int verify(CSP * csp, int * solution){
+    for(int i = 0; i < csp->max_var; i++)
+        for(int j = 0; j < csp->max_var; j++){
+                if(csp->matrice_contraintes->constraint_matrix[i][j]){
+                    if(!csp->matrice_contraintes->constraint_matrix[i][j]->relations[solution[i]][solution[j]])
+                        return 0;
+                }
+        }
+    return 1;
+}
+
 /***
  * Crée un CSP vide
  * paramètre : - max_var : le nombre de variables de notre CSP

@@ -1,7 +1,7 @@
 CC=gcc
 RM=rm -f
 
-CFLAGS=-W -Wall -std=c99
+CFLAGS=-W -Wall -std=c99 -g
 
 SOURCES=$(wildcard *.c)
 HEADERS=$(wildcard *.h)

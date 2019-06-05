@@ -43,7 +43,7 @@ int withoutsupport_PC(Constraint_mat * contraintes, int * domaine_k, int var_i, 
  *             - j : la variable i, un entier
  * sortie : retourne la liste PC mis à jour
  ***/
-List * check_support_PC(CSP * csp, List * list_PC, int *** status_PC, int i, int j, int a, int b){
+List * check_support_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3], int i, int j, int a, int b){
     int *tuple_1 = malloc(3*sizeof(int));
     int *tuple_2 = malloc(3*sizeof(int));
     tuple_1[0] = i;
@@ -77,7 +77,7 @@ List * check_support_PC(CSP * csp, List * list_PC, int *** status_PC, int i, int
  *               les variables filtrée présente dans list_PC
  * sortie : Une liste list_PC
  ***/
-List * initialize_PC8(CSP * csp, int *** status_PC){
+List * initialize_PC8(CSP * csp, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3]){
     int nb_var = csp->max_var;
     List * list_PC = NULL;
     for(int i = 0; i < nb_var; i++)
@@ -97,7 +97,7 @@ List * initialize_PC8(CSP * csp, int *** status_PC){
                                 if(withoutsupport_PC(csp->matrice_contraintes, csp->Domain->domain_matrix[k],i,j,k,a,b,csp->Domain->max_domain)){
                                     csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = 0;
                                     csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = 0;
-                                    list_PC = check_support_PC(csp, list_PC, status_PC,i,j,a,b);
+                                    list_PC = check_support_PC(csp, list_PC, dim1, dim2, dim3,status_PC,i,j,a,b);
 
                                 }
     }
@@ -112,7 +112,7 @@ List * initialize_PC8(CSP * csp, int *** status_PC){
  *               les variables filtrée présente dans list_PC
  * sortie : retourne un pointeur sur la liste PC (màj au cours de l'execution de cette fonction)
  ***/
-List * propagate_PC(CSP * csp, List * list_PC, int *** status_PC, int i, int k, int a){
+List * propagate_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3], int i, int k, int a){
     for(int j = 0; j < csp->max_var; j++)
         if( j != i && j != k )
             for(int b = 0; b < csp->Domain->max_domain; b++)
@@ -120,7 +120,7 @@ List * propagate_PC(CSP * csp, List * list_PC, int *** status_PC, int i, int k, 
                     if(withoutsupport_PC(csp->matrice_contraintes, csp->Domain->domain_matrix[k],i,j,k,a,b,csp->Domain->max_domain)){
                         csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = 0;
                         csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = 0;
-                        list_PC = check_support_PC(csp, list_PC, status_PC,i,j,a,b);
+                        list_PC = check_support_PC(csp, list_PC,dim1, dim2, dim3, status_PC,i,j,a,b);
                     }
 
     return list_PC;
@@ -135,15 +135,17 @@ void PC8(CSP * csp){
     int a;
     int dim1 = csp->max_var, dim2 = csp->Domain->max_domain, dim3 = csp->max_var;
     int i,j,k;
-    int *** status_PC = (int ***)malloc(dim1*sizeof(int**));
-    for (i = 0; i< dim1; i++) {
-        status_PC[i] = (int **) malloc(dim2*sizeof(int *));
-        for (j = 0; j < dim2; j++) {
-            status_PC[i][j] = (int *)malloc(dim3*sizeof(int));
+    int status_PC[dim1][dim2][dim3];
+    
+    for (int x = 0; x< dim1; x++) {
+        for (int y = 0; y < dim2; y++) {
+            for(int z = 0; z < dim3; z++)
+                status_PC[x][y][z] = 0;
         }
     }
+
     List * list_PC;
-    list_PC = initialize_PC8(csp, status_PC);
+    list_PC = initialize_PC8(csp, dim1, dim2, dim3, status_PC);
     int * data;
     while(list_PC != NULL){
         data =  (int *)list_PC->value;
@@ -152,6 +154,6 @@ void PC8(CSP * csp){
         k = data[2];
         list_PC = list_remove_first(list_PC);
         status_PC[i][a][k] = false;
-        list_PC = propagate_PC(csp, list_PC, status_PC,i, k, a);
+        list_PC = propagate_PC(csp, list_PC,dim1, dim2, dim3, status_PC,i, k, a);
     }
 }
