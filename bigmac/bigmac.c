@@ -93,8 +93,10 @@ int consistent(CSP * csp, int * affectation, int niveau, int size){
         for (int j=0; j < csp_bivalent->Domain->max_domain; j++)
             if (csp_bivalent->Domain->domain_matrix[i][j] == 1)
                 vide = 0;
-        if (vide == 1)
+        if (vide == 1){
+            free_csp(csp_bivalent);
             return 0;
+        }
     }
 
     for (int i=0; i < niveau; i++)
@@ -111,8 +113,10 @@ int consistent(CSP * csp, int * affectation, int niveau, int size){
                         if (csp_bivalent->matrice_contraintes->constraint_matrix[i][k]->relations[j][l] == 1 && csp_bivalent->Domain->domain_matrix[i][j] && csp_bivalent->Domain->domain_matrix[k][l])
                             vide = 0;
             }
-            if (vide == 1)
+            if (vide == 1){
+                free_csp(csp_bivalent);
                 return 0;
+            }
         }
 
     free_csp(csp_bivalent);
@@ -165,9 +169,10 @@ void solve_csp(CSP * csp){
             printf("BM : correct!\n");
         else
             printf("BM : Incorrect!\n");
-        
     }
-
+    free_csp(csp2);
+    free(inst);
+    free(var);
 }
 
 /***
@@ -202,6 +207,7 @@ void bigmac(CSP *csp){
             affectation[niveau] = 0;
             niveau--;
             if(niveau < 0){
+                free(affectation);
                 printf("pas de solutions\n");
                 return;
             }
@@ -222,6 +228,10 @@ void bigmac(CSP *csp){
 
     bigmac_csp = create_csp(csp, affectation, niveau-1, taille_domaine);
     solve_csp(bigmac_csp);
+
+
+    free_csp(bigmac_csp);
+    free(affectation);
 }
 
 

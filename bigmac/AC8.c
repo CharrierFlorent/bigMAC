@@ -88,7 +88,7 @@ int withoutsupport_AC(int ** relations, int * domaine, int var_i, int var_j, int
  * 			   - var_status : un tableau de booleen qui permet de savoir si une variable est déja instanciée,
  * 						  	  vaut NULL si pas de variables instanciées
  ***/
-List * check_support(CSP * csp, List * list_ac, int * status_AC, int i, int j, int *var_status){
+List_i * check_support(CSP * csp, List_i * list_ac, int * status_AC, int i, int j, int *var_status){
     int taille_domaine = csp->Domain->max_domain;
     for(int b = 0; b < taille_domaine; b++){
         if(csp->Domain->domain_matrix[j][b] != 1)
@@ -101,9 +101,10 @@ List * check_support(CSP * csp, List * list_ac, int * status_AC, int i, int j, i
 			}
             if(!status_AC[j]){
                 if(!list_ac)
-                    list_ac = append(NULL,&j);
+                    list_ac = i_append(NULL,j);
                 else
-                    list_ac = append(list_ac,&j);
+                    list_ac = i_append(list_ac,j);  
+
                 status_AC[j] = 1;
             }
         }
@@ -121,9 +122,9 @@ List * check_support(CSP * csp, List * list_ac, int * status_AC, int i, int j, i
  * 						  	  vaut NULL si pas de variables instanciées
  * sortie : Une liste list_AC
  ***/
-List * initialize_AC8(CSP * csp, int * status_AC, int *var_status){
+List_i * initialize_AC8(CSP * csp, int * status_AC, int *var_status){
     int nb_var = csp->max_var;
-    List * list_ac = NULL;
+    List_i * list_ac = NULL;
     for(int i = 0; i < nb_var; i++)
         status_AC[i] = 0;
 
@@ -146,13 +147,13 @@ List * initialize_AC8(CSP * csp, int * status_AC, int *var_status){
  * 			   - var_status : un tableau de booleen qui permet de savoir si une variable est déja instanciée,
  * 						  	  vaut NULL si pas de variables instanciées
  ***/
-void propagate_AC(CSP * csp, List * list_ac, int * status_AC, int i, int *var_status){
+List_i * propagate_AC(CSP * csp, List_i * list_ac, int * status_AC, int i, int *var_status){
     for(int j = 0; j < csp->max_var; j++){
         if(!csp->matrice_contraintes->constraint_matrix[i][j])
             continue;
         list_ac = check_support(csp, list_ac, status_AC, i, j, var_status);
     }
-//    return list_ac;
+    return list_ac;
 }
 
 /***
@@ -165,13 +166,13 @@ void propagate_AC(CSP * csp, List * list_ac, int * status_AC, int i, int *var_st
 void AC8(CSP * csp, int *var_status){
     int i;
     int * status_ac = malloc(csp->max_var*sizeof(int));
-    List * list_ac = initialize_AC8(csp, status_ac, var_status);
-    //list_ac = list_remove_first(list_ac);
+    List_i * list_ac = initialize_AC8(csp, status_ac, var_status);
     while(list_ac){
-        i = *((int *)list_ac->value);
-        list_ac = list_remove_first(list_ac);
-        status_ac[i] = false;
-        propagate_AC(csp, list_ac, status_ac,i, var_status);
-
+        i = list_ac->value;
+        list_ac = i_list_remove_first(list_ac);
+        status_ac[i] = 0;
+        list_ac = propagate_AC(csp, list_ac, status_ac,i, var_status);
     }
+    i_list_destroy(list_ac);
+    free(status_ac);
 }

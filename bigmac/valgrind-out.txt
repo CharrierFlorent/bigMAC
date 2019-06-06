@@ -1,797 +1,94 @@
-==15235== Memcheck, a memory error detector
-==15235== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==15235== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info
-==15235== Command: ./bigmac
-==15235== Parent PID: 3116
-==15235== 
---15235-- 
---15235-- Valgrind options:
---15235--    --leak-check=full
---15235--    --show-leak-kinds=all
---15235--    --track-origins=yes
---15235--    --verbose
---15235--    --log-file=valgrind-out.txt
---15235-- Contents of /proc/version:
---15235--   Linux version 3.16.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 4.9.2 (Debian 4.9.2-10+deb8u1) ) #1 SMP Debian 3.16.57-2 (2018-07-14)
---15235-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
---15235-- Page sizes: currently 4096, max supported 4096
---15235-- Valgrind library directory: /usr/lib/valgrind
---15235-- Reading syms from /home/charrier/bigMAC/bigmac/bigmac
---15235-- Reading syms from /lib/x86_64-linux-gnu/ld-2.19.so
---15235--   Considering /lib/x86_64-linux-gnu/ld-2.19.so ..
---15235--   .. CRC mismatch (computed c067370a wanted 8c45d3ea)
---15235--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.19.so ..
---15235--   .. CRC is valid
---15235-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
---15235--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
---15235--   .. CRC mismatch (computed 948bf0bc wanted d423983b)
---15235--   Considering /usr/lib/debug/usr/lib/valgrind/memcheck-amd64-linux ..
---15235--   .. CRC is valid
---15235--    object doesn't have a dynamic symbol table
---15235-- Scheduler: using generic scheduler lock implementation.
---15235-- Reading suppressions file: /usr/lib/valgrind/default.supp
-==15235== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-15235-by-charrier-on-???
-==15235== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-15235-by-charrier-on-???
-==15235== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-15235-by-charrier-on-???
-==15235== 
-==15235== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==15235== don't want to do, unless you know exactly what you're doing,
-==15235== or are doing some strange experiment):
-==15235==   /usr/lib/valgrind/../../bin/vgdb --pid=15235 ...command...
-==15235== 
-==15235== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==15235==   /path/to/gdb ./bigmac
-==15235== and then give GDB the following command
-==15235==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=15235
-==15235== --pid is optional if only one valgrind process is running
-==15235== 
---15235-- REDIR: 0x4017b50 (ld-linux-x86-64.so.2:strlen) redirected to 0x380bd821 (vgPlain_amd64_linux_REDIR_FOR_strlen)
---15235-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
---15235--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
---15235--   .. CRC mismatch (computed 9771ef88 wanted e8eb00cf)
---15235--   Considering /usr/lib/debug/usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
---15235--   .. CRC is valid
---15235-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
---15235--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
---15235--   .. CRC mismatch (computed c7f6cf2f wanted fb419f04)
---15235--   Considering /usr/lib/debug/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
---15235--   .. CRC is valid
-==15235== WARNING: new redirection conflicts with existing -- ignoring it
---15235--     old: 0x04017b50 (strlen              ) R-> (0000.0) 0x380bd821 vgPlain_amd64_linux_REDIR_FOR_strlen
---15235--     new: 0x04017b50 (strlen              ) R-> (2007.0) 0x04c2c260 strlen
---15235-- REDIR: 0x4017900 (ld-linux-x86-64.so.2:index) redirected to 0x4c2be10 (index)
---15235-- REDIR: 0x4017b20 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c2d310 (strcmp)
---15235-- REDIR: 0x4018850 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c2fe60 (mempcpy)
---15235-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.19.so
---15235--   Considering /lib/x86_64-linux-gnu/libpthread-2.19.so ..
---15235--   .. CRC mismatch (computed f4f64cec wanted 5df2566e)
---15235--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libpthread-2.19.so ..
---15235--   .. CRC is valid
---15235-- Reading syms from /lib/x86_64-linux-gnu/libc-2.19.so
---15235--   Considering /lib/x86_64-linux-gnu/libc-2.19.so ..
---15235--   .. CRC mismatch (computed 8b555f82 wanted cd9b3228)
---15235--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.19.so ..
---15235--   .. CRC is valid
---15235-- REDIR: 0x50d7dc0 (libc.so.6:strcasecmp) redirected to 0x4a23730 (_vgnU_ifunc_wrapper)
---15235-- REDIR: 0x50da0b0 (libc.so.6:strncasecmp) redirected to 0x4a23730 (_vgnU_ifunc_wrapper)
---15235-- REDIR: 0x50d7590 (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x4a23730 (_vgnU_ifunc_wrapper)
---15235-- REDIR: 0x50d5910 (libc.so.6:rindex) redirected to 0x4c2baf0 (rindex)
---15235-- REDIR: 0xffffffffff600400 (???:???) redirected to 0x380bd80d (vgPlain_amd64_linux_REDIR_FOR_vtime)
---15235-- REDIR: 0x50cdfc0 (libc.so.6:malloc) redirected to 0x4c28bb0 (malloc)
---15235-- REDIR: 0x50d3c10 (libc.so.6:strlen) redirected to 0x4c2c1a0 (strlen)
---15235-- REDIR: 0x50dc7e0 (libc.so.6:__GI_memcpy) redirected to 0x4c2dd10 (__GI_memcpy)
---15235-- REDIR: 0x50de750 (libc.so.6:strchrnul) redirected to 0x4c2fa80 (strchrnul)
---15235-- REDIR: 0x50ce930 (libc.so.6:calloc) redirected to 0x4c2ac90 (calloc)
---15235-- REDIR: 0x50ce600 (libc.so.6:free) redirected to 0x4c29e20 (free)
-==15235== Invalid read of size 4
-==15235==    at 0x4024A4: AC8 (AC8.c:171)
-==15235==    by 0x404715: RFL (RFL.c:50)
-==15235==    by 0x4042FC: test_RFL (main.c:64)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235==  Address 0xffefffef0 is on thread 1's stack
-==15235==  144 bytes below stack pointer
-==15235== 
-==15235== Invalid read of size 4
-==15235==    at 0x4024A4: AC8 (AC8.c:171)
-==15235==    by 0x403AF3: consistent (bigmac.c:88)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235==  Address 0xffefffee0 is on thread 1's stack
-==15235==  144 bytes below stack pointer
-==15235== 
-==15235== 
-==15235== HEAP SUMMARY:
-==15235==     in use at exit: 359,860 bytes in 9,901 blocks
-==15235==   total heap usage: 11,548 allocs, 1,647 frees, 421,892 bytes allocated
-==15235== 
-==15235== Searching for pointers to 9,901 not-freed blocks
-==15235== Checked 98,216 bytes
-==15235== 
-==15235== 16 bytes in 1 blocks are indirectly lost in loss record 1 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400A2B: init_constraint_mat (structure.c:53)
-==15235==    by 0x40103D: init_empty_csp (structure.c:188)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 16 bytes in 1 blocks are indirectly lost in loss record 2 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400A2B: init_constraint_mat (structure.c:53)
-==15235==    by 0x40130A: create_csp_by_copy (structure.c:257)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 24 bytes in 1 blocks are indirectly lost in loss record 3 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008AE: init_domain (structure.c:19)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 24 bytes in 1 blocks are indirectly lost in loss record 4 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008AE: init_domain (structure.c:19)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 32 bytes in 1 blocks are definitely lost in loss record 5 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x401BF6: generer_probleme (generateur.c:29)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 6 of 86
-==15235==    at 0x4C2AD10: calloc (vg_replace_malloc.c:623)
-==15235==    by 0x40409C: test_BT (main.c:22)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 7 of 86
-==15235==    at 0x4C2AD10: calloc (vg_replace_malloc.c:623)
-==15235==    by 0x4041CE: test_FC (main.c:43)
-==15235==    by 0x4044D0: main (main.c:118)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 8 of 86
-==15235==    at 0x4C2AD10: calloc (vg_replace_malloc.c:623)
-==15235==    by 0x4041E8: test_FC (main.c:44)
-==15235==    by 0x4044D0: main (main.c:118)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 9 of 86
-==15235==    at 0x4C2AD10: calloc (vg_replace_malloc.c:623)
-==15235==    by 0x4042D0: test_RFL (main.c:62)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 10 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x404558: RFL (RFL.c:22)
-==15235==    by 0x4042FC: test_RFL (main.c:64)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 11 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x404571: RFL (RFL.c:23)
-==15235==    by 0x4042FC: test_RFL (main.c:64)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 12 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x403F41: bigmac (bigmac.c:189)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 13 of 86
-==15235==    at 0x4C2AD10: calloc (vg_replace_malloc.c:623)
-==15235==    by 0x403E3A: solve_csp (bigmac.c:154)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 40 bytes in 1 blocks are definitely lost in loss record 14 of 86
-==15235==    at 0x4C2AD10: calloc (vg_replace_malloc.c:623)
-==15235==    by 0x403E54: solve_csp (bigmac.c:156)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are indirectly lost in loss record 15 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are indirectly lost in loss record 16 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008F7: init_domain (structure.c:23)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are indirectly lost in loss record 17 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400A4A: init_constraint_mat (structure.c:55)
-==15235==    by 0x40103D: init_empty_csp (structure.c:188)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are indirectly lost in loss record 18 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are indirectly lost in loss record 19 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008F7: init_domain (structure.c:23)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are indirectly lost in loss record 20 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400A4A: init_constraint_mat (structure.c:55)
-==15235==    by 0x40130A: create_csp_by_copy (structure.c:257)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 21 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x401D43: generer_probleme (generateur.c:48)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 22 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x404494: main (main.c:113)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 23 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x4044A4: main (main.c:114)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 24 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x4044B4: main (main.c:115)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 25 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x404068: test_BT (main.c:17)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 26 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x404078: test_BT (main.c:18)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 27 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x4041F8: test_FC (main.c:45)
-==15235==    by 0x4044D0: main (main.c:118)
-==15235== 
-==15235== 80 bytes in 1 blocks are definitely lost in loss record 28 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x4042E0: test_RFL (main.c:63)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 272 bytes in 17 blocks are indirectly lost in loss record 29 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400A2B: init_constraint_mat (structure.c:53)
-==15235==    by 0x40103D: init_empty_csp (structure.c:188)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 400 bytes in 10 blocks are indirectly lost in loss record 30 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400954: init_domain (structure.c:30)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 400 bytes in 10 blocks are indirectly lost in loss record 31 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400954: init_domain (structure.c:30)
-==15235==    by 0x4012F2: create_csp_by_copy (structure.c:256)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 400 bytes in 10 blocks are definitely lost in loss record 32 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x40247A: AC8 (AC8.c:167)
-==15235==    by 0x404715: RFL (RFL.c:50)
-==15235==    by 0x4042FC: test_RFL (main.c:64)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 408 bytes in 17 blocks are indirectly lost in loss record 33 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008AE: init_domain (structure.c:19)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 576 bytes in 36 blocks are indirectly lost in loss record 34 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 576 bytes in 36 blocks are indirectly lost in loss record 35 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 720 bytes in 18 blocks are indirectly lost in loss record 36 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401E0B: generer_probleme (generateur.c:58)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 720 bytes in 18 blocks are indirectly lost in loss record 37 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401E41: generer_probleme (generateur.c:59)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 828 bytes in 69 blocks are definitely lost in loss record 38 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x40278B: check_support_PC (PC8.c:47)
-==15235==    by 0x403001: propagate_PC (PC8.c:123)
-==15235==    by 0x403409: PC8 (PC8.c:157)
-==15235==    by 0x403AFF: consistent (bigmac.c:89)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 828 bytes in 69 blocks are definitely lost in loss record 39 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x402799: check_support_PC (PC8.c:48)
-==15235==    by 0x403001: propagate_PC (PC8.c:123)
-==15235==    by 0x403409: PC8 (PC8.c:157)
-==15235==    by 0x403AFF: consistent (bigmac.c:89)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 904 bytes in 17 blocks are definitely lost in loss record 40 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,108 bytes in 34 blocks are definitely lost in loss record 41 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x40247A: AC8 (AC8.c:167)
-==15235==    by 0x403AF3: consistent (bigmac.c:88)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,312 bytes in 17 blocks are indirectly lost in loss record 42 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008D7: init_domain (structure.c:22)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,312 bytes in 17 blocks are indirectly lost in loss record 43 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4008F7: init_domain (structure.c:23)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,312 bytes in 17 blocks are indirectly lost in loss record 44 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400A4A: init_constraint_mat (structure.c:55)
-==15235==    by 0x40103D: init_empty_csp (structure.c:188)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 45 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404494: main (main.c:113)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 46 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4044A4: main (main.c:114)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 47 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4044B4: main (main.c:115)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 48 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404068: test_BT (main.c:17)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 49 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404078: test_BT (main.c:18)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 50 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4041F8: test_FC (main.c:45)
-==15235==    by 0x4044D0: main (main.c:118)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 51 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4042E0: test_RFL (main.c:63)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 52 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,440 bytes in 36 blocks are indirectly lost in loss record 53 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,600 bytes in 10 blocks are indirectly lost in loss record 54 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AA3: init_constraint_mat (structure.c:61)
-==15235==    by 0x40103D: init_empty_csp (structure.c:188)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 1,600 bytes in 10 blocks are indirectly lost in loss record 55 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AA3: init_constraint_mat (structure.c:61)
-==15235==    by 0x40130A: create_csp_by_copy (structure.c:257)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 3,600 bytes in 90 blocks are indirectly lost in loss record 56 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401E0B: generer_probleme (generateur.c:58)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 3,600 bytes in 90 blocks are indirectly lost in loss record 57 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401E41: generer_probleme (generateur.c:59)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 4,608 (288 direct, 4,320 indirect) bytes in 18 blocks are definitely lost in loss record 58 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401E0B: generer_probleme (generateur.c:58)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 4,608 (288 direct, 4,320 indirect) bytes in 18 blocks are definitely lost in loss record 59 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401E41: generer_probleme (generateur.c:59)
-==15235==    by 0x404478: main (main.c:110)
-==15235== 
-==15235== 5,736 bytes in 478 blocks are definitely lost in loss record 60 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x40278B: check_support_PC (PC8.c:47)
-==15235==    by 0x402CF3: initialize_PC8 (PC8.c:100)
-==15235==    by 0x40333A: PC8 (PC8.c:148)
-==15235==    by 0x403AFF: consistent (bigmac.c:89)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 5,736 bytes in 478 blocks are definitely lost in loss record 61 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x402799: check_support_PC (PC8.c:48)
-==15235==    by 0x402CF3: initialize_PC8 (PC8.c:100)
-==15235==    by 0x40333A: PC8 (PC8.c:148)
-==15235==    by 0x403AFF: consistent (bigmac.c:89)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 6,560 bytes in 164 blocks are indirectly lost in loss record 62 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400954: init_domain (structure.c:30)
-==15235==    by 0x401029: init_empty_csp (structure.c:187)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 63 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404494: main (main.c:113)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 64 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4044A4: main (main.c:114)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 65 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4044B4: main (main.c:115)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 66 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404068: test_BT (main.c:17)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 67 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404078: test_BT (main.c:18)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 68 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4041F8: test_FC (main.c:45)
-==15235==    by 0x4044D0: main (main.c:118)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 69 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4042E0: test_RFL (main.c:63)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 70 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 7,200 bytes in 180 blocks are indirectly lost in loss record 71 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 8,832 bytes in 552 blocks are indirectly lost in loss record 72 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 73 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404494: main (main.c:113)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 74 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4044A4: main (main.c:114)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 75 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4044B4: main (main.c:115)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 76 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404068: test_BT (main.c:17)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 77 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x404078: test_BT (main.c:18)
-==15235==    by 0x4044C4: main (main.c:117)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 78 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4041F8: test_FC (main.c:45)
-==15235==    by 0x4044D0: main (main.c:118)
-==15235== 
-==15235== 9,216 (576 direct, 8,640 indirect) bytes in 36 blocks are definitely lost in loss record 79 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x401394: create_csp_by_copy (structure.c:261)
-==15235==    by 0x4042E0: test_RFL (main.c:63)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235== 
-==15235== 11,528 (32 direct, 11,496 indirect) bytes in 1 blocks are definitely lost in loss record 80 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x40100C: init_empty_csp (structure.c:185)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x40403E: bigmac (bigmac.c:223)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 11,528 (32 direct, 11,496 indirect) bytes in 1 blocks are definitely lost in loss record 81 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x4012CD: create_csp_by_copy (structure.c:254)
-==15235==    by 0x403E20: solve_csp (bigmac.c:153)
-==15235==    by 0x40404E: bigmac (bigmac.c:224)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 25,376 bytes in 164 blocks are indirectly lost in loss record 82 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AA3: init_constraint_mat (structure.c:61)
-==15235==    by 0x40103D: init_empty_csp (structure.c:188)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 32,720 bytes in 818 blocks are indirectly lost in loss record 83 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B12: init_constraint (structure.c:79)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 68,096 (4,256 direct, 63,840 indirect) bytes in 266 blocks are definitely lost in loss record 84 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400AF3: init_constraint (structure.c:77)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 163,600 bytes in 4,090 blocks are indirectly lost in loss record 85 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x400B6B: init_constraint (structure.c:85)
-==15235==    by 0x4037EA: create_csp (bigmac.c:38)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== 178,408 (544 direct, 177,864 indirect) bytes in 17 blocks are definitely lost in loss record 86 of 86
-==15235==    at 0x4C28C20: malloc (vg_replace_malloc.c:296)
-==15235==    by 0x40100C: init_empty_csp (structure.c:185)
-==15235==    by 0x4035E9: create_csp (bigmac.c:14)
-==15235==    by 0x403AD7: consistent (bigmac.c:85)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235== 
-==15235== LEAK SUMMARY:
-==15235==    definitely lost: 26,044 bytes in 1,746 blocks
-==15235==    indirectly lost: 333,816 bytes in 8,155 blocks
-==15235==      possibly lost: 0 bytes in 0 blocks
-==15235==    still reachable: 0 bytes in 0 blocks
-==15235==         suppressed: 0 bytes in 0 blocks
-==15235== 
-==15235== ERROR SUMMARY: 282 errors from 40 contexts (suppressed: 0 from 0)
-==15235== 
-==15235== 14 errors in context 1 of 40:
-==15235== Invalid read of size 4
-==15235==    at 0x4024A4: AC8 (AC8.c:171)
-==15235==    by 0x404715: RFL (RFL.c:50)
-==15235==    by 0x4042FC: test_RFL (main.c:64)
-==15235==    by 0x4044DC: main (main.c:119)
-==15235==  Address 0xffefffef0 is on thread 1's stack
-==15235==  144 bytes below stack pointer
-==15235== 
-==15235== 
-==15235== 230 errors in context 2 of 40:
-==15235== Invalid read of size 4
-==15235==    at 0x4024A4: AC8 (AC8.c:171)
-==15235==    by 0x403AF3: consistent (bigmac.c:88)
-==15235==    by 0x403FEE: bigmac (bigmac.c:212)
-==15235==    by 0x40434F: test_bigmac (main.c:73)
-==15235==    by 0x4044E8: main (main.c:120)
-==15235==  Address 0xffefffee0 is on thread 1's stack
-==15235==  144 bytes below stack pointer
-==15235== 
-==15235== ERROR SUMMARY: 282 errors from 40 contexts (suppressed: 0 from 0)
+==9696== Memcheck, a memory error detector
+==9696== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==9696== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info
+==9696== Command: ./bigmac
+==9696== Parent PID: 9695
+==9696== 
+--9696-- 
+--9696-- Valgrind options:
+--9696--    --leak-check=full
+--9696--    --show-leak-kinds=all
+--9696--    --track-origins=yes
+--9696--    --verbose
+--9696--    --log-file=valgrind-out.txt
+--9696-- Contents of /proc/version:
+--9696--   Linux version 3.16.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 4.9.2 (Debian 4.9.2-10+deb8u1) ) #1 SMP Debian 3.16.57-2 (2018-07-14)
+--9696-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--9696-- Page sizes: currently 4096, max supported 4096
+--9696-- Valgrind library directory: /usr/lib/valgrind
+--9696-- Reading syms from /home/charrier/bigMAC/bigmac/bigmac
+--9696-- Reading syms from /lib/x86_64-linux-gnu/ld-2.19.so
+--9696--   Considering /lib/x86_64-linux-gnu/ld-2.19.so ..
+--9696--   .. CRC mismatch (computed c067370a wanted 8c45d3ea)
+--9696--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.19.so ..
+--9696--   .. CRC is valid
+--9696-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--9696--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--9696--   .. CRC mismatch (computed 948bf0bc wanted d423983b)
+--9696--   Considering /usr/lib/debug/usr/lib/valgrind/memcheck-amd64-linux ..
+--9696--   .. CRC is valid
+--9696--    object doesn't have a dynamic symbol table
+--9696-- Scheduler: using generic scheduler lock implementation.
+--9696-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==9696== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-9696-by-charrier-on-???
+==9696== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-9696-by-charrier-on-???
+==9696== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-9696-by-charrier-on-???
+==9696== 
+==9696== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==9696== don't want to do, unless you know exactly what you're doing,
+==9696== or are doing some strange experiment):
+==9696==   /usr/lib/valgrind/../../bin/vgdb --pid=9696 ...command...
+==9696== 
+==9696== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==9696==   /path/to/gdb ./bigmac
+==9696== and then give GDB the following command
+==9696==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=9696
+==9696== --pid is optional if only one valgrind process is running
+==9696== 
+--9696-- REDIR: 0x4017b50 (ld-linux-x86-64.so.2:strlen) redirected to 0x380bd821 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--9696-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--9696--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--9696--   .. CRC mismatch (computed 9771ef88 wanted e8eb00cf)
+--9696--   Considering /usr/lib/debug/usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--9696--   .. CRC is valid
+--9696-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--9696--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--9696--   .. CRC mismatch (computed c7f6cf2f wanted fb419f04)
+--9696--   Considering /usr/lib/debug/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--9696--   .. CRC is valid
+==9696== WARNING: new redirection conflicts with existing -- ignoring it
+--9696--     old: 0x04017b50 (strlen              ) R-> (0000.0) 0x380bd821 vgPlain_amd64_linux_REDIR_FOR_strlen
+--9696--     new: 0x04017b50 (strlen              ) R-> (2007.0) 0x04c2c260 strlen
+--9696-- REDIR: 0x4017900 (ld-linux-x86-64.so.2:index) redirected to 0x4c2be10 (index)
+--9696-- REDIR: 0x4017b20 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c2d310 (strcmp)
+--9696-- REDIR: 0x4018850 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c2fe60 (mempcpy)
+--9696-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.19.so
+--9696--   Considering /lib/x86_64-linux-gnu/libpthread-2.19.so ..
+--9696--   .. CRC mismatch (computed f4f64cec wanted 5df2566e)
+--9696--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libpthread-2.19.so ..
+--9696--   .. CRC is valid
+--9696-- Reading syms from /lib/x86_64-linux-gnu/libc-2.19.so
+--9696--   Considering /lib/x86_64-linux-gnu/libc-2.19.so ..
+--9696--   .. CRC mismatch (computed 8b555f82 wanted cd9b3228)
+--9696--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.19.so ..
+--9696--   .. CRC is valid
+--9696-- REDIR: 0x50d7dc0 (libc.so.6:strcasecmp) redirected to 0x4a23730 (_vgnU_ifunc_wrapper)
+--9696-- REDIR: 0x50da0b0 (libc.so.6:strncasecmp) redirected to 0x4a23730 (_vgnU_ifunc_wrapper)
+--9696-- REDIR: 0x50d7590 (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x4a23730 (_vgnU_ifunc_wrapper)
+--9696-- REDIR: 0x50d5910 (libc.so.6:rindex) redirected to 0x4c2baf0 (rindex)
+--9696-- REDIR: 0xffffffffff600400 (???:???) redirected to 0x380bd80d (vgPlain_amd64_linux_REDIR_FOR_vtime)
+--9696-- REDIR: 0x50d3c10 (libc.so.6:strlen) redirected to 0x4c2c1a0 (strlen)
+--9696-- REDIR: 0x50dc7e0 (libc.so.6:__GI_memcpy) redirected to 0x4c2dd10 (__GI_memcpy)
+--9696-- REDIR: 0x50de750 (libc.so.6:strchrnul) redirected to 0x4c2fa80 (strchrnul)
+--9696-- REDIR: 0x50cdfc0 (libc.so.6:malloc) redirected to 0x4c28bb0 (malloc)
+--9696-- REDIR: 0x50ce930 (libc.so.6:calloc) redirected to 0x4c2ac90 (calloc)
+--9696-- REDIR: 0x50ce600 (libc.so.6:free) redirected to 0x4c29e20 (free)
+==9696== 
+==9696== HEAP SUMMARY:
+==9696==     in use at exit: 0 bytes in 0 blocks
+==9696==   total heap usage: 5,195 allocs, 5,195 frees, 202,716 bytes allocated
+==9696== 
+==9696== All heap blocks were freed -- no leaks are possible
+==9696== 
+==9696== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==9696== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

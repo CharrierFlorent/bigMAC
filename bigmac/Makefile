@@ -35,4 +35,7 @@ depend: $(SOURCES) $(HEADERS)
 	@echo "\033[1;34m=== UPDATING DEPENDENCIES ===\033[0m"
 	gcc $(CFLAGS) -MM $(SOURCES) | tee depend
 
+valgrind: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./$(EXEC)
+
 -include depend

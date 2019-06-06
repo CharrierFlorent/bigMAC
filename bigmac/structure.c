@@ -184,6 +184,7 @@ CSP * init_empty_csp(int max_var, int max_domain){
 	CSP * csp;
 	csp = malloc(sizeof(CSP));
 	csp->max_var = max_var;
+
 	csp->Domain = init_domain(max_var, max_domain);
 	csp->matrice_contraintes = init_constraint_mat(max_var);
 	for(int i = 0; i < max_var; i++)
@@ -201,6 +202,7 @@ void free_domain(DOMAIN * domain){
 		free(domain->domain_matrix[i]);
 	}
 	free(domain->domain_matrix);
+	free(domain->taille_domaine);
 	free(domain);
 }
 
@@ -233,6 +235,22 @@ void free_constraint(Constraint * constraint){
  * paramètre : - csp : un struct CSP
  */
 void free_csp(CSP * csp){
+
+	for(int i = 0; i < csp->max_var;i++)
+		for(int j = 0; j < csp->max_var;j++){
+			for(int k = 0; k < csp->Domain->max_domain; k++)
+				if(csp->matrice_contraintes->constraint_matrix[i][j])
+					free(csp->matrice_contraintes->constraint_matrix[i][j]->relations[k]);
+			if(csp->matrice_contraintes->constraint_matrix[i][j])
+				free(csp->matrice_contraintes->constraint_matrix[i][j]->relations);
+		}	
+
+
+
+	for(int i = 0; i < csp->max_var;i++){
+		for(int j = 0; j < csp->max_var;j++)
+			free(csp->matrice_contraintes->constraint_matrix[i][j]);
+	}
     free_domain(csp->Domain);
     free_constraint_mat(csp->matrice_contraintes);
     //free(csp->liste_var);

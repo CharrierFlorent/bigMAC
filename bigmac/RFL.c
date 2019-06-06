@@ -64,6 +64,8 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			// si on revient au début et qu'on a pas réussi à affecter la variable alors pas de solution
 			if (variable_courante == tab_order_var[0])
             {
+				free(var_status);
+				free(tab_order_var);
                 printf("pas de solution\n");
                 return;
             }
@@ -136,4 +138,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			if (probleme->Domain->domain_matrix[i][j] != 0)
 				probleme->Domain->domain_matrix[i][j] = 1;
 	}
+
+	free(var_status);
+	free(tab_order_var);
 }

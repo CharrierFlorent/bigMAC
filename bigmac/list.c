@@ -10,7 +10,6 @@
  * paramètre : - list : Une liste chainée
  * sortie : Un pointer List sur le prochain élément
  */
-
 List * get_next(List *list){
     if(!list)
         return NULL;
@@ -64,7 +63,8 @@ List * append(List *list, void *value){
 }
 
 /***
- * Supprime le 1er maillon de la liste chainée.
+ * Supprime le 1er maillon de la liste chainée. Ne supprime
+ * pas la mémoire possiblement alloué dans le void *
  * paramètre : - list : Un pointeur sur une liste chainée
  * sortie : Un pointeur sur la nouvelle liste
  */
@@ -76,6 +76,23 @@ List * list_remove_first(List *list){
     free(first);
     return list;
 }
+
+/***
+ * Supprime le 1er maillon de la liste chainée et libère 
+ * la mémoire du void * data
+ * paramètre : - list : Un pointeur sur une liste chainée
+ * sortie : Un pointeur sur la nouvelle liste
+ */
+List * list_remove_first_and_data(List *list){
+    if(!list)
+        return NULL;
+    free(list->value);
+    List *first = list;
+    list = list->next;
+    free(first);
+    return list;
+}
+
 
 /***
  * Supprime une liste chainée

@@ -25,8 +25,7 @@ int valeur_absolue(int a){
  * sortie : un csp
  */
 CSP * generer_probleme(){
-    srand(time(0));
-    CSP * csp = malloc(sizeof(CSP));
+    CSP * csp;// = malloc(sizeof(CSP));
     int nb_var, taille_domaine, m;
     double p, t;
 

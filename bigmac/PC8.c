@@ -59,6 +59,9 @@ List * check_support_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3,
             list_PC = append(NULL, tuple_1);
         status_PC[i][a][j] = true;
     }
+    else
+        free(tuple_1);
+
     if(!status_PC[j][b][i]){
         if(list_PC)
             list_PC = append(list_PC, tuple_2);
@@ -66,6 +69,8 @@ List * check_support_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3,
             list_PC = append(NULL, tuple_2);
         status_PC[j][b][i] = true;
     }
+    else
+        free(tuple_2);
     return list_PC;
 }
 
@@ -98,7 +103,6 @@ List * initialize_PC8(CSP * csp, int dim1, int dim2, int dim3, int status_PC[][d
                                     csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = 0;
                                     csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = 0;
                                     list_PC = check_support_PC(csp, list_PC, dim1, dim2, dim3,status_PC,i,j,a,b);
-
                                 }
     }
     return list_PC;
@@ -122,7 +126,6 @@ List * propagate_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3, int
                         csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = 0;
                         list_PC = check_support_PC(csp, list_PC,dim1, dim2, dim3, status_PC,i,j,a,b);
                     }
-
     return list_PC;
 }
 
@@ -148,12 +151,13 @@ void PC8(CSP * csp){
     list_PC = initialize_PC8(csp, dim1, dim2, dim3, status_PC);
     int * data;
     while(list_PC != NULL){
-        data =  (int *)list_PC->value;
+        data = (int *)list_PC->value;
         i = data[0];
         a = data[1];
         k = data[2];
-        list_PC = list_remove_first(list_PC);
+        list_PC = list_remove_first_and_data(list_PC);
         status_PC[i][a][k] = false;
         list_PC = propagate_PC(csp, list_PC,dim1, dim2, dim3, status_PC,i, k, a);
     }
+    list_destroy(list_PC);
 }

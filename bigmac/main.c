@@ -16,8 +16,6 @@ extern int noeud_BT;
 void test_BT(CSP * csp){
 	CSP * csp2 = create_csp_by_copy(csp);
 	CSP * csp3 = create_csp_by_copy(csp);
-    /*printf("########### V1 ################\n");
-    BackTrack(csp);*/
     printf("########### BT ################\n");
     int * inst = calloc(csp->max_var,sizeof(int));
 
@@ -35,6 +33,7 @@ void test_BT(CSP * csp){
     }
     free_csp(csp2);
     free_csp(csp3);
+    free(inst);
     printf("noeud explores BT %d\n", noeud_BT);   
 }
 
@@ -54,6 +53,8 @@ void test_FC(CSP * csp){
         	printf("FC : Incorrect!\n");
         }
     free_csp(csp2);
+    free(inst);
+    free(var);
     printf("noeud explores FC %d\n", noeud_FC);   
 }
 
@@ -67,6 +68,7 @@ void test_RFL (CSP * csp)
     else
     	printf("RFL : Incorrect!\n");
     free_csp(csp2);
+    free(inst);
 }
 
 void test_bigmac(CSP * csp){
@@ -104,7 +106,7 @@ void test_AC_PC(CSP * csp){
 }
 
 int main(){
-
+        srand(time(0));
 
 //    while(1){
         CSP * csp1 = generer_probleme();
@@ -123,11 +125,10 @@ int main(){
         //test_AC_PC(csp1);
         //test_AC8(csp1);
         //test_PC8(csp1);
-
-        free_csp(csp1);
         free_csp(csp2);
         free_csp(csp3);
         free_csp(csp4);
+        free_csp(csp1);
     //}
 	return 0;
 }

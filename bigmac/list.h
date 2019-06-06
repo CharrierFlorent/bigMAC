@@ -14,6 +14,7 @@ List * create_list(void *value);
 List * prepend(List *old, void *value);
 List * append(List *list, void *value);
 List * list_remove_first(List *list);
+List * list_remove_first_and_data(List *list);
 void list_destroy(List *list);
 int list_length(List *list);
 
