@@ -92,7 +92,7 @@ void test_AC8(CSP * csp){
 
         printf("Domaine avant AC8\n");
         print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
-        AC8(csp, NULL);
+        AC8(csp,1, NULL);
 
         printf("Domaine après AC8\n");
         print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
@@ -100,7 +100,7 @@ void test_AC8(CSP * csp){
 }
 
 void test_AC_PC(CSP * csp){
-    AC8(csp, NULL);
+    AC8(csp, 1, NULL);
     PC8(csp);
     test_BT(csp);
 }

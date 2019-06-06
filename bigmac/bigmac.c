@@ -85,7 +85,7 @@ int consistent(CSP * csp, int * affectation, int niveau, int size){
     CSP * csp_bivalent = create_csp(csp,affectation, niveau, size);
     int vide = 1;
 
-    AC8(csp_bivalent,NULL);
+    AC8(csp_bivalent,1,NULL);
     PC8(csp_bivalent);
 
     for (int i=0; i < niveau+1; i++){
