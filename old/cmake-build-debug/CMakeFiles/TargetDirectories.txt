@@ -1,3 +1,0 @@
-/cygdrive/c/Users/Charrier/Desktop/Projet GL/TAL/bigMAC/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/cygdrive/c/Users/Charrier/Desktop/Projet GL/TAL/bigMAC/cmake-build-debug/CMakeFiles/bigMAC.dir
-/cygdrive/c/Users/Charrier/Desktop/Projet GL/TAL/bigMAC/cmake-build-debug/CMakeFiles/edit_cache.dir
