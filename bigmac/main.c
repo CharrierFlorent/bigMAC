@@ -16,7 +16,7 @@ extern int noeud_BT;
 void test_BT(CSP * csp){
 	CSP * csp2 = create_csp_by_copy(csp);
 	CSP * csp3 = create_csp_by_copy(csp);
-    printf("########### BT ################\n");
+    printf("*************************************** BT ***************************************\n");
     int * inst = calloc(csp->max_var,sizeof(int));
 
     if(BT(csp2,inst, 0)){
@@ -38,7 +38,7 @@ void test_BT(CSP * csp){
 }
 
 void test_FC(CSP * csp){
-    printf("FC\n");
+    printf("*************************************** FC ***************************************\n");
     int * inst = calloc(csp->max_var,sizeof(int));
     int * var = calloc(csp->max_var,sizeof(int));
     CSP * csp2 = create_csp_by_copy(csp);
@@ -62,7 +62,7 @@ void test_RFL (CSP * csp)
 {
 	int * inst = calloc(csp->max_var,sizeof(int));
 	CSP * csp2 = create_csp_by_copy(csp);
-	RFL (csp, inst, MIN_DOMAINE);
+	RFL (csp, inst, 42);
 	if(verify(csp2,inst))
         printf("RFL : correct!\n");
     else
@@ -114,12 +114,12 @@ int main(){
         
         CSP * csp2 = create_csp_by_copy(csp1);
         CSP * csp3 = create_csp_by_copy(csp1);
-        CSP * csp4 = create_csp_by_copy(csp1);
+        //CSP * csp4 = create_csp_by_copy(csp1);
         
-        test_BT    (csp1);
+        //test_BT    (csp1);
         test_FC    (csp2);
         test_RFL   (csp3);
-        test_bigmac(csp4);
+        //test_bigmac(csp4);
 
 
         //test_AC_PC(csp1);
@@ -127,7 +127,7 @@ int main(){
         //test_PC8(csp1);
         free_csp(csp2);
         free_csp(csp3);
-        free_csp(csp4);
+        //free_csp(csp4);
         free_csp(csp1);
     //}
 	return 0;

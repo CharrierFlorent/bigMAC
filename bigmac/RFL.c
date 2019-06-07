@@ -26,7 +26,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 	for (int i=0; i<probleme->max_var; i++)
 		var_status[i] = 0;
 	int nb_var_instancie = 0;	// correspond aux nombres de variables instanciées par RFL
-    variable_courante = choix_variable(probleme, heuristique, var_status, nb_var_instancie);
+    variable_courante = 0;// choix_variable(probleme, heuristique, var_status, nb_var_instancie);
     tab_order_var[nb_var_instancie] = variable_courante;
 
 	while (nb_var_instancie < probleme->max_var)
@@ -56,6 +56,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 						break;
 					}
 					else{
+						printf("vide domaine de %d profondeur %d\n", variable_courante, -(10+nb_var_instancie));
 						for(int i = 0; i < probleme->max_var; i++)
 							for(int d = 0; d < probleme->Domain->max_domain; d++){
 			            		if(i == variable_courante && d != valeur_courante && (probleme->Domain->domain_matrix[variable_courante][d] == -2)){
@@ -73,6 +74,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 		if (affect == 0)
 		{
 			// si on revient au début et qu'on a pas réussi à affecter la variable alors pas de solution
+			printf("variable %d\n",variable_courante );
 			if (variable_courante == tab_order_var[0])
             {
 				free(var_status);
@@ -104,7 +106,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			// "retour arrière"
 			variable_courante = tab_order_var[nb_var_instancie-1];
 			nb_var_instancie--;
-			
+			printf("descend sur %d\n",variable_courante);
 			// on réinitialise le domaine de la variable précédente et on enleve du domaine la précédente valeur inconsistante
 			int cpt = 0;
 			for (int j=0; j<probleme->Domain->max_domain; j++){
@@ -117,12 +119,13 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 					cpt++;
 			}
 			probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain - cpt;
-				
+			printf("offset reset %d\n", -(10+nb_var_instancie));
 			for(int i = 0; i < probleme->max_var; i++)
 				for(int d = 0; d < probleme->Domain->max_domain; d++){
 		    	       	if(probleme->Domain->domain_matrix[variable_courante][d] == -(10+nb_var_instancie)){
 		               		probleme->Domain->domain_matrix[i][d] = 1;
 		               		probleme->Domain->taille_domaine[i]++;
+		               		printf("test\n");	
 		    	       	}
 				}
 
@@ -130,6 +133,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 		}
 		else
 		{
+			printf("succes variable_courante %d, valeur %d\n", variable_courante, valeur_courante);
 			sol[nb_var_instancie] = valeur_courante; 
 			// si on a réussit à affecter une valeur à la variable alors on supprime toute les autres valeurs du domaine de la variable
 			for (int j=0; j<probleme->Domain->max_domain; j++)
@@ -137,9 +141,10 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 					probleme->Domain->domain_matrix[variable_courante][j] = -2;
 			probleme->Domain->taille_domaine[variable_courante] = 1;
 			// on choisit la prochaine variable
-			variable_courante = choix_variable (probleme, heuristique, var_status, nb_var_instancie);
-			tab_order_var[nb_var_instancie] = variable_courante;
-			nb_var_instancie++;
+				variable_courante = choix_variable (probleme, heuristique, var_status, nb_var_instancie);
+				tab_order_var[nb_var_instancie] = variable_courante; 
+				nb_var_instancie++;
+			
 		}
 	}
 	
