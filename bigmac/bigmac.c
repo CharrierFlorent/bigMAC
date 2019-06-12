@@ -217,8 +217,7 @@ void bigmac(CSP *csp){
             noeud_BM++;
             succes_consistence = consistent(csp, affectation, niveau, taille_domaine);
             if(succes_consistence){
-                niveau++;
-                
+                niveau++;    
             }
             else{
                 continue;
