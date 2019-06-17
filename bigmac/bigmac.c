@@ -1,5 +1,5 @@
 #include "bigmac.h"
-
+ extern FILE * glb_output_file;
 /***
  * Crée un csp bivalent à partir d'un csp et d'une liste d'affectation
  * paramètre : - csp : un csp
@@ -191,15 +191,15 @@ void solve_csp(CSP * csp){
 	int * var = calloc(csp->max_var,sizeof(int));
 
     if(FC(csp2, inst, var, 0)){
-        printf("solution : \n");
+        fprintf(glb_output_file,"solution : \n");
         for(int i=0; i < csp->max_var; i++)
-            printf("x%d = %d \n",i, inst[i]);
+            fprintf(glb_output_file,"x%d = %d \n",i, inst[i]);
 
 
         if(verify(csp2,inst))
-            printf("BM : correct!\n");
+            fprintf(glb_output_file,"BM : correct!\n");
         else
-            printf("BM : Incorrect!\n");
+            fprintf(glb_output_file,"BM : Incorrect!\n");
     }
     free_csp(csp2);
     free(inst);
@@ -211,7 +211,7 @@ void solve_csp(CSP * csp){
  * paramètre : - csp : un csp
  ***/
 void bigmac(CSP *csp){
-    printf ("\n*****************************BIGMAC***************************\n");
+    fprintf(glb_output_file,"\n*****************************BIGMAC***************************\n");
     CSP * bigmac_csp;
     int niveau = 0;
     int succes_affectation, succes_consistence = 0;
@@ -232,7 +232,7 @@ void bigmac(CSP *csp){
      * On s'arrete quand on a explorer tout l'arbre
      */
     while(not_complete(affectation, max_var) || !succes_consistence){
-        //printf("niveau %d \n", niveau);
+        //fprintf(glb_output_file,"niveau %d \n", niveau);
         succes_affectation = affecter(affectation, niveau, taille_domaine);
         if(!succes_affectation){
             affectation[niveau] = 0;
@@ -240,7 +240,7 @@ void bigmac(CSP *csp){
             reload_domain(csp, niveau, 0, niveau);
             if(niveau < 0){
                 free(affectation);
-                printf("pas de solutions\n");
+                fprintf(glb_output_file,"pas de solutions\n");
                 return;
             }
         }

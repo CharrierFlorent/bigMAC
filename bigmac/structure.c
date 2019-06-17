@@ -3,6 +3,7 @@
  */
 
 #include "structure.h"
+ extern FILE * glb_output_file;
 /*
   Contient toute les fonctions d'allocations et de libération
   mémoire des différentes structures
@@ -22,14 +23,14 @@ DOMAIN * init_domain(int max_var, int max_domain){
 	domain->taille_domaine = malloc(max_var*(sizeof(domain->taille_domaine)));
 	domain->domain_matrix = malloc(domain->max_var*(sizeof(domain->domain_matrix)));
 	if(domain->domain_matrix == NULL){
-		printf("erreur allocation memoire domaine\n");
+		fprintf(stdout,"erreur allocation memoire domaine\n");
 		exit(-1);
 	}
 
 	for(int i = 0; i < domain->max_var;i++){
 		domain->domain_matrix[i] = malloc(domain->max_domain*(sizeof(domain->domain_matrix[i])));
 		if(domain->domain_matrix == NULL){
-			printf("erreur allocation memoire domaine\n");
+			fprintf(stdout,"erreur allocation memoire domaine\n");
 			exit(-1);
 		}
 	}
@@ -54,13 +55,13 @@ Constraint_mat * init_constraint_mat(int max_var){
 	matrice_contrainte->max_var = max_var;
 	matrice_contrainte->constraint_matrix = malloc(max_var*sizeof(struct Constraint *));
 	if(matrice_contrainte->constraint_matrix == NULL){
-		printf("Erreur allocation memoire matrice de contrainte\n");
+		fprintf(stdout,"Erreur allocation memoire matrice de contrainte\n");
 		exit(-1);
 	}
 	for(int i = 0; i < max_var; i++){
 		matrice_contrainte->constraint_matrix[i] = malloc(max_var*sizeof(Constraint));
 		if(matrice_contrainte->constraint_matrix == NULL){
-			printf("erreur allocation memoire matrice de domaine\n");
+			fprintf(stdout,"erreur allocation memoire matrice de domaine\n");
 			exit(-1);
 		}
 	}
@@ -78,13 +79,13 @@ Constraint * init_constraint(int max_domain){
 	constraint->max_domain = max_domain;
 	constraint->relations = malloc(max_domain*sizeof(constraint->relations));
 	if(constraint->relations == NULL){
-		printf("Erreur allocation memoire contrainte\n");
+		fprintf(stdout,"Erreur allocation memoire contrainte\n");
 		exit(-1);
 	}
 	for(int i = 0; i < max_domain; i++){
 		constraint->relations[i] = malloc(max_domain*sizeof(constraint->relations[i]));
 		if(constraint->relations[i] == NULL){
-			printf("erreur allocation memoire contrainte \n");
+			fprintf(stdout,"erreur allocation memoire contrainte \n");
 			exit(-1);
 		}
 	}
@@ -99,13 +100,13 @@ Constraint * init_constraint(int max_domain){
 void init_stack(Stack * stack, int max_var){
 	stack->instanciation_stack = malloc(max_var*sizeof(stack->instanciation_stack));
 	if(stack->instanciation_stack == NULL){
-		printf("erreur allocation memoire pile\n");
+		fprintf(stdout,"erreur allocation memoire pile\n");
 		exit(-1);
 	}
 	for(int i = 0 ; i < max_var; i++){
 		stack->instanciation_stack[i] = malloc(2*sizeof(stack->instanciation_stack[i]));
 		if(stack->instanciation_stack[i] == NULL){
-			printf("erreur allocation memoire pile \n");
+			fprintf(stdout,"erreur allocation memoire pile \n");
 			exit(-1);
 		}
 	}
@@ -132,9 +133,9 @@ void empty_matrix(int ** matrix, int nb_col, int nb_row){
 void print_matrix(int ** matrix, int nb_col, int nb_row){
 	for(int i = 0 ; i < nb_col; i++){
 		for(int j = 0; j < nb_row; j++){
-			printf(" %d ", matrix[i][j]);
+			fprintf(glb_output_file," %d ", matrix[i][j]);
 		}
-		printf("\n");
+		fprintf(glb_output_file,"\n");
 	}
 }
 
@@ -142,7 +143,7 @@ void print_relation(CSP * csp){
     for(int i =0; i < csp->max_var;i++){
         for(int j = 0; j < csp->max_var; j++){
             if(csp->matrice_contraintes->constraint_matrix[i][j]){
-                printf("%d et %d\n",i,j);
+                fprintf(glb_output_file,"%d et %d\n",i,j);
                 print_matrix(csp->matrice_contraintes->constraint_matrix[i][j]->relations, csp->Domain->max_domain, csp->Domain->max_domain);
             }
         }
@@ -150,12 +151,12 @@ void print_relation(CSP * csp){
 }
 
 void print_csp(CSP * csp){
-        printf("\n");
-        printf("Domaine : \n");
+        fprintf(glb_output_file,"\n");
+        fprintf(glb_output_file,"Domaine : \n");
         print_matrix(csp->Domain->domain_matrix, csp->max_var, csp->Domain->max_domain);
-        printf("\nrelations : \n");
+        fprintf(glb_output_file,"\nrelations : \n");
         print_relation(csp);
-        printf("\n");
+        fprintf(glb_output_file,"\n");
 }
 
 /***

@@ -3,7 +3,7 @@
  *en utilisant l'algorithme du Forward Checking
  */
 #include "FC.h"
-
+ extern FILE * glb_output_file;
 
 int noeud_FC = 0;
 /***
@@ -144,7 +144,7 @@ void filtre_domaine (CSP *probleme, int variable_courante, int valeur_courante, 
  */
 void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 {
-	printf ("**************Forward Checking**************\n");
+	fprintf(glb_output_file, "**************Forward Checking**************\n");
 
 	int variable_courante, valeur_courante;
 	int affect = 0;			// est égal à 1 si on a réussit à trouver une affectation de la variable courante, 0 sinon
@@ -161,13 +161,13 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
     tab_order_var[nb_var_instancie] = variable_courante;
 	while (nb_var_instancie < probleme->max_var)
 	{
-		//printf("variable_courante %d\n", variable_courante);
+		//fprintf(glb_output_file,"variable_courante %d\n", variable_courante);
 		var_status[variable_courante] = 1;
 		affect = 0;
 		//on instancie la variable courante
 		for (valeur_courante = 0; valeur_courante < probleme->Domain->max_domain; valeur_courante++)
 		{
-		    //printf("variable %d\n", variable_courante);
+		    //fprintf(glb_output_file,"variable %d\n", variable_courante);
 			if (probleme->Domain->domain_matrix[variable_courante][valeur_courante] == 1)
 			{
 				probleme->Domain->taille_domaine[variable_courante]--;
@@ -186,11 +186,11 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 		}
 		if (affect == 0)
 		{
-			//printf("affectation ratée %d nb_var_instancie %d\n", variable_courante, nb_var_instancie);
+			//fprintf(glb_output_file,"affectation ratée %d nb_var_instancie %d\n", variable_courante, nb_var_instancie);
 			// si on revient au début et qu'on a pas réussi à affecter la variable alors pas de solution
 			if (variable_courante == tab_order_var[0])
             {
-                printf("pas de solution\n");
+                fprintf(glb_output_file,"pas de solution\n");
                 return;
             }
 			var_status[variable_courante] = 0;
@@ -203,8 +203,8 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
             //tab_order_var[nb_var_instancie] = 0;
 			variable_courante = tab_order_var[nb_var_instancie-1];
 			tab_order_var[nb_var_instancie] = -1;
-			//printf("variable %d\n", variable_courante);
-			//printf("affecte tableau %d\n", variable_courante);
+			//fprintf(glb_output_file,"variable %d\n", variable_courante);
+			//fprintf(glb_output_file,"affecte tableau %d\n", variable_courante);
 			if(var_status[variable_courante]){
                 var_status[variable_courante] = 0;
                 nb_var_instancie--;
@@ -229,21 +229,21 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 
                 if(probleme->Domain->domain_matrix[variable_courante][j] == -3){
                     taille++;
-                    //printf("aucun ???%d\n " ,taille);
+                    //fprintf(glb_output_file,"aucun ???%d\n " ,taille);
                 }
             }
 
 			probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain-taille;
-			//printf("taille %d\n", probleme->Domain->taille_domaine[variable_courante]);
+			//fprintf(glb_output_file,"taille %d\n", probleme->Domain->taille_domaine[variable_courante]);
 			if(probleme->Domain->taille_domaine[variable_courante] == 0){
-				printf("pas de solution\n");
+				fprintf(glb_output_file,"pas de solution\n");
 				return;
 			}
 
 		}
 		else
 		{
-			//printf("affectation reussis %d nb_var_instancie %d\n", variable_courante, nb_var_instancie);
+			//fprintf(glb_output_file,"affectation reussis %d nb_var_instancie %d\n", variable_courante, nb_var_instancie);
 			// si on a réussit à affecter une valeur à la variable alors on supprime toute les autres valeurs du domaine de la variable
 			for (int j=0; j<probleme->Domain->max_domain; j++)
 				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante){ // attention ici pas sur
@@ -256,20 +256,20 @@ void Forward_Checking (CSP *probleme , int * solution, HEURISTIQUE heuristique)
 			if(variable_courante == -1){
                 if(nb_var_instancie == probleme->max_var-1)
                     break;
-                printf("pas de sol\n");
+                fprintf(glb_output_file,"pas de sol\n");
                 return;
 			}
 			
 			tab_order_var[nb_var_instancie] = variable_courante;
 			nb_var_instancie++;
-			//printf("affecté fonction %d\n", variable_courante);
+			//fprintf(glb_output_file,"affecté fonction %d\n", variable_courante);
 		}
 	}
 
 	// affichage de la solution
-	printf("solution : \n");
+	fprintf(glb_output_file,"solution : \n");
 	for(int i=0; i < probleme->max_var; i++)
-		printf("x%d = %d \n",i, solution[i]);
+		fprintf(glb_output_file,"x%d = %d \n",i, solution[i]);
 			
 
 	// on reinitialise le domaine

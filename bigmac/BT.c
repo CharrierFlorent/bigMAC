@@ -4,7 +4,7 @@
  */
 
 #include "BT.h"
-
+ extern FILE * glb_output_file;
 /***
  * Vérifie que l'affectation de la variable_courante soit consistante
  * Paramètre : - probleme : le probleme CSP à résoudre
@@ -38,7 +38,7 @@ int consistant (CSP *probleme, int variable_courante, int valeur_courante)
  */
 void BackTrack (CSP *probleme)
 {
-	printf ("**************BackTrack**************\n");
+	fprintf(glb_output_file,"**************BackTrack**************\n");
 
 	int variable_courante, valeur_courante;
 	int affect = 0;			//est égal à 1 si on a réussit à trouver une affectation, 0 sinon
@@ -59,7 +59,7 @@ void BackTrack (CSP *probleme)
 		{
 			if (variable_courante == 0)
             {
-                printf("pas de solution\n");
+                fprintf(glb_output_file,"pas de solution\n");
                 return;
             }
 			// si on a pas trouvé d'affectation on revient à la variable précédente
@@ -77,24 +77,24 @@ void BackTrack (CSP *probleme)
 		else
 		{
 			// si on a réussit à affecter une valeur à la variable alors on supprime toute les autres valeurs du domaine de la variable
-			//printf("valeur courante %d\n",valeur_courante);
+			//fprintf(glb_output_file,"valeur courante %d\n",valeur_courante);
 			for (int j=0; j<probleme->Domain->max_domain; j++)
 				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante-1)
 					probleme->Domain->domain_matrix[variable_courante][j] = -2;
 			probleme->Domain->taille_domaine[variable_courante] = 1;
 			// et on passe à la variable suivante
-			//printf("et la %d\n", probleme->Domain->domain_matrix[variable_courante][valeur_courante]);
+			//fprintf(glb_output_file,"et la %d\n", probleme->Domain->domain_matrix[variable_courante][valeur_courante]);
 			variable_courante++;
 
 		}
 	}
 
 	// affichage de la solution
-	printf("solution : \n");
+	fprintf(glb_output_file,"solution : \n");
 	for(int i=0; i < probleme->max_var; i++)
 		for (int j=0; j<probleme->Domain->max_domain; j++)
 			if (probleme->Domain->domain_matrix[i][j] == 1)
-				printf("x%d = %d \n",i, j);
+				fprintf(glb_output_file,"x%d = %d \n",i, j);
 
 	// on reinitialise le domaine
 	for(int i=0; i < probleme->max_var; i++)

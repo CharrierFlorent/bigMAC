@@ -4,7 +4,7 @@
  */
 
 #include "generateur.h"
-
+ extern FILE * glb_output_file;
 /***
  * retourne la valeur absolue d'un entier
  * paramètre : - a : un entier
@@ -24,28 +24,32 @@ int valeur_absolue(int a){
  *                   au nombre total de couple possible. Vaut entre 0 et 1.
  * sortie : un csp
  */
-CSP * generer_probleme(){
+CSP * generer_probleme(char *argv[]){
     CSP * csp;// = malloc(sizeof(CSP));
     int nb_var, taille_domaine, m;
     double p, t;
-
-	printf("Combien de variable ?\n");
+/*
+	fprintf(glb_output_file,"Combien de variable ?\n");
 	scanf("%d", &nb_var);
-	printf("taille du domaine ?\n");
+	fprintf(glb_output_file,"taille du domaine ?\n");
 	scanf("%d", &taille_domaine);
-    printf("Densité du graphe ? (entre 0 et 1)\n");
+    fprintf(glb_output_file,"Densité du graphe ? (entre 0 et 1)\n");
     scanf("%lf", &p);
-    printf("Durete ? (entre 0 et 1)\n");
+    fprintf(glb_output_file,"Durete ? (entre 0 et 1)\n");
     scanf("%lf", &t);
-
+*/
+    nb_var = atoi(argv[1]);
+    taille_domaine = atoi(argv[2]);
+    p = atof(argv[3]);
+    t = atof(argv[4]);
 
     int cardinal_R = (1-t)*taille_domaine*taille_domaine;
     m = p*(nb_var)*(nb_var-1)/2;
     cardinal_R = valeur_absolue(cardinal_R);
-    printf("construction d'un csp avec : N = %d, D = %d m  = %d, R = %d Densite = %f et durete = %f\n", nb_var, taille_domaine, m, cardinal_R, p, t);
+    fprintf(glb_output_file,"construction d'un csp avec : N = %d, D = %d m  = %d, R = %d Densite = %f et durete = %f\n", nb_var, taille_domaine, m, cardinal_R, p, t);
 
     csp = init_empty_csp(nb_var, taille_domaine);
-    printf("\n");
+    fprintf(glb_output_file,"\n");
     int nb_contrainte = 0, nb_relations = 0;
     int var1 = 0, var2 = 0, d1 = 0, d2 = 0;
     while(nb_contrainte != m){

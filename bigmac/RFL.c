@@ -5,7 +5,8 @@
 #include "RFL.h"
 #include "AC8.h"
 
- int noeud_RFL = 0;
+extern FILE * glb_output_file;
+int noeud_RFL = 0;
 
 /***
  * Fonction utilisé par RFL. Elle met à jour le domaine d'une variable
@@ -75,7 +76,7 @@ void reduce_domain(CSP * probleme, int variable_courante, int valeur_courante){
  */
 void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 {
-	printf ("**************RFL**************\n");
+	fprintf(glb_output_file,"**************RFL**************\n");
 
 	int variable_courante, valeur_courante;
 	int affect = 0;			// est égal à 1 si on a réussit à trouver une affectation de la variable courante, 0 sinon
@@ -120,10 +121,10 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			// si on revient au début et qu'on a pas réussi à affecter la variable alors pas de solution
 			if (variable_courante == tab_order_var[0])
             {
-            	printf("tab order %d\n", tab_order_var[0]);
+            	fprintf(glb_output_file,"tab order %d\n", tab_order_var[0]);
 				free(var_status);
 				free(tab_order_var);
-                printf("pas de solution\n");
+                fprintf(glb_output_file,"pas de solution\n");
                 return;
             }
 			// on réinitialise les valeurs deja exploré de la variable courante
@@ -159,9 +160,9 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 	}
 	
 	// affichage de la solution
-	printf("solution : \n");
+	fprintf(glb_output_file,"solution : \n");
 	for(int i=0; i < probleme->max_var; i++)
-		printf("x%d = %d \n",i,sol[i]);
+		fprintf(glb_output_file,"x%d = %d \n",i,sol[i]);
 			
 
 	free(var_status);

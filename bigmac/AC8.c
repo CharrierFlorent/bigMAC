@@ -4,7 +4,7 @@
  */
 
 #include "AC8.h"
-
+ extern FILE * glb_output_file;
 /***
  * Retourne la 1ere valeur du domaine d'une variable
  * W.I.P : pas encore certain de la structure de données

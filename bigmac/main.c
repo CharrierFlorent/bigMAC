@@ -12,51 +12,52 @@ extern int noeud_BM;
 extern int noeud_FC;
 extern int noeud_BT;
 extern int noeud_RFL;
+FILE * glb_output_file;
 
 void test_BT(CSP * csp){
 	CSP * csp2 = create_csp_by_copy(csp);
 	CSP * csp3 = create_csp_by_copy(csp);
-    printf("*************************************** BT ***************************************\n");
+    fprintf(glb_output_file,"*************************************** BT ***************************************\n");
     int * inst = calloc(csp->max_var,sizeof(int));
 
     if(BT(csp2,inst, 0)){
-        printf("solution : \n");
+        fprintf(glb_output_file,"solution : \n");
         for(int i=0; i < csp2->max_var; i++)
             for (int j=0; j<csp2->Domain->max_domain; j++)
                 if(csp2->Domain->domain_matrix[i][j] == 1)
-                    printf("x%d = %d \n",i, j);
+                    fprintf(glb_output_file,"x%d = %d \n",i, j);
 
         if(verify(csp3,inst))
-            printf("BT : correct!\n");
+            fprintf(glb_output_file,"BT : correct!\n");
         else
-        	printf("BT : Incorrect!\n");
+        	fprintf(glb_output_file,"BT : Incorrect!\n");
     }
     free_csp(csp2);
     free_csp(csp3);
     free(inst);
-    printf("noeud explores BT %d\n", noeud_BT);   
+    fprintf(stdout,"noeud explores BT %d\n", noeud_BT);   
     noeud_BT = 0;
 }
 
 void test_FC(CSP * csp){
-    printf("*************************************** FC ***************************************\n");
+    fprintf(glb_output_file,"*************************************** FC ***************************************\n");
     int * inst = calloc(csp->max_var,sizeof(int));
     int * var = calloc(csp->max_var,sizeof(int));
     CSP * csp2 = create_csp_by_copy(csp);
     //Forward_Checking(csp, inst, 42);
     if(FC(csp, inst, var, 0)){
         for(int i = 0; i < csp->max_var;i++)
-            printf("x%d = %d \n", i, inst[i]);
+            fprintf(glb_output_file,"x%d = %d \n", i, inst[i]);
 
         if(verify(csp2,inst))
-            printf("FC : correct!\n");
+            fprintf(glb_output_file,"FC : correct!\n");
         else
-        	printf("FC : Incorrect!\n");
+        	fprintf(glb_output_file,"FC : Incorrect!\n");
         }
     free_csp(csp2);
     free(inst);
     free(var);
-    printf("noeud explores FC %d\n", noeud_FC); 
+    fprintf(stdout,"noeud explores FC %d\n", noeud_FC); 
     noeud_FC = 0;  
 }
 
@@ -66,40 +67,40 @@ void test_RFL (CSP * csp)
 	CSP * csp2 = create_csp_by_copy(csp);
 	RFL (csp, inst, 42);
 	if(verify(csp2,inst))
-        printf("RFL : correct!\n");
+        fprintf(glb_output_file,"RFL : correct!\n");
     else
-    	printf("RFL : Incorrect!\n");
+    	fprintf(glb_output_file,"RFL : Incorrect!\n");
     free_csp(csp2);
     free(inst);
-    printf("noeud explores RFL %d\n", noeud_RFL);   
+    fprintf(stdout,"noeud explores RFL %d\n", noeud_RFL);   
     noeud_RFL = 0;
 }
 
 void test_bigmac(CSP * csp){
     bigmac(csp);
-    printf("noeud explores BM %d\n", noeud_BM);  
+    fprintf(stdout,"noeud explores BM %d\n", noeud_BM);  
     noeud_BM = 0;  
 }
 
 
 void test_PC8(CSP * csp){
     //test_BT(csp);
-    printf("Domaine avant PC8\n");
+    fprintf(glb_output_file,"Domaine avant PC8\n");
     //print_relation(csp);
-    printf("#########################################################################################################\n");
+    fprintf(glb_output_file,"#########################################################################################################\n");
     PC8(csp);
-    printf("Domaine après PC8\n");
+    fprintf(glb_output_file,"Domaine après PC8\n");
     //print_relation(csp);
     test_BT(csp);
 }
 
 void test_AC8(CSP * csp){
 
-        printf("Domaine avant AC8\n");
+        fprintf(glb_output_file,"Domaine avant AC8\n");
         print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
         AC8(csp,1, NULL);
 
-        printf("Domaine après AC8\n");
+        fprintf(glb_output_file,"Domaine après AC8\n");
         print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
         //test_BT(csp);
 }
@@ -110,30 +111,45 @@ void test_AC_PC(CSP * csp){
     test_BT(csp);
 }
 
-int main(){
-        srand(time(0));
+int main(int argc, char *argv[]){
+    srand(time(0));
 
-    while(1){
-        CSP * csp1 = generer_probleme();
-        print_csp(csp1);
-        
-        CSP * csp2 = create_csp_by_copy(csp1);
-        CSP * csp3 = create_csp_by_copy(csp1);
-        CSP * csp4 = create_csp_by_copy(csp1);
-        
-        test_BT    (csp1);
-        test_FC    (csp2);
-        test_RFL   (csp3);
-        test_bigmac(csp4);
-
-
-        //test_AC_PC(csp1);
-        //test_AC8(csp1);
-        //test_PC8(csp1);
-        free_csp(csp2);
-        free_csp(csp3);
-        free_csp(csp4);
-        free_csp(csp1);
+    
+    if(argc < 5){
+        fprintf(stdout,"Usage : %s <nb variables> <taille domaine> <densite> <durete>\n", argv[0]);
+        exit(0);
     }
+
+    if(atof(argv[3]) > 1 || atof(argv[4]) > 1 || atof(argv[3]) < 0 || atof(argv[4]) < 0){
+        fprintf(stdout,"Erreur argument, densite et durete doivent etre compris entre 0 et 1");
+        exit(0);
+    }
+
+    if(argc > 5 && strcmp(argv[5],"-v") == 0)
+        glb_output_file = stdout;
+    else
+        glb_output_file = fopen("poubelle","w");
+
+    CSP * csp1 = generer_probleme(argv);
+    print_csp(csp1);
+    
+    CSP * csp2 = create_csp_by_copy(csp1);
+    CSP * csp3 = create_csp_by_copy(csp1);
+    CSP * csp4 = create_csp_by_copy(csp1);
+    
+    test_BT    (csp1);
+    test_FC    (csp2);
+    test_RFL   (csp3);
+    test_bigmac(csp4);
+
+
+    //test_AC_PC(csp1);
+    //test_AC8(csp1);
+    //test_PC8(csp1);
+    free_csp(csp2);
+    free_csp(csp3);
+    free_csp(csp4);
+    free_csp(csp1);
+    fclose(glb_output_file);
 	return 0;
 }

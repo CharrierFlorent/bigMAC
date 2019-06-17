@@ -4,7 +4,7 @@
  */
 
 #include "list_i.h"
-
+ extern FILE * glb_output_file;
 /***
  * Retourne le prochain maillon de la chaine
  * paramètre : - list : Une liste chainée

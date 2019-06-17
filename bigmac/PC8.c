@@ -5,7 +5,7 @@
  */
 
 #include "PC8.h"
-
+ extern FILE * glb_output_file;
 
 /***
  * Verifie si la valeur b du domaine d'une variable à un support
