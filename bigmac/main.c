@@ -11,7 +11,7 @@
 extern int noeud_BM;
 extern int noeud_FC;
 extern int noeud_BT;
-
+extern int noeud_RFL;
 
 void test_BT(CSP * csp){
 	CSP * csp2 = create_csp_by_copy(csp);
@@ -35,6 +35,7 @@ void test_BT(CSP * csp){
     free_csp(csp3);
     free(inst);
     printf("noeud explores BT %d\n", noeud_BT);   
+    noeud_BT = 0;
 }
 
 void test_FC(CSP * csp){
@@ -55,7 +56,8 @@ void test_FC(CSP * csp){
     free_csp(csp2);
     free(inst);
     free(var);
-    printf("noeud explores FC %d\n", noeud_FC);   
+    printf("noeud explores FC %d\n", noeud_FC); 
+    noeud_FC = 0;  
 }
 
 void test_RFL (CSP * csp)
@@ -69,11 +71,14 @@ void test_RFL (CSP * csp)
     	printf("RFL : Incorrect!\n");
     free_csp(csp2);
     free(inst);
+    printf("noeud explores RFL %d\n", noeud_RFL);   
+    noeud_RFL = 0;
 }
 
 void test_bigmac(CSP * csp){
     bigmac(csp);
-    printf("noeud explores BM %d\n", noeud_BM);    
+    printf("noeud explores BM %d\n", noeud_BM);  
+    noeud_BM = 0;  
 }
 
 
@@ -116,10 +121,10 @@ int main(){
         CSP * csp3 = create_csp_by_copy(csp1);
         CSP * csp4 = create_csp_by_copy(csp1);
         
-        //test_BT    (csp1);
+        test_BT    (csp1);
         test_FC    (csp2);
         test_RFL   (csp3);
-        //test_bigmac(csp4);
+        test_bigmac(csp4);
 
 
         //test_AC_PC(csp1);

@@ -4,10 +4,20 @@
  */
 #include "RFL.h"
 #include "AC8.h"
-#define EXPLORED -3          //Valeurs deja explorer à un niveau k, doivent être restauré seulement quand on remonte au niveau k-1
-#define NOT_AFFECTED -2      //Quand on affecte une valeur, on met toute les autres en NOT_AFFECTED
 
+ int noeud_RFL = 0;
 
+/***
+ * Fonction utilisé par RFL. Elle met à jour le domaine d'une variable
+ * lorsque l'on backtrack dans RFL. C'est à dire que si l'affectation d'une
+ * variable i+1 echoue, on backtrack sur la variable i, et on doit supprimé la
+ * valeur qui lui était actuellement affecté pour ne pas la reaffecter ensuite.
+ * Ces valeurs restent dans l'etat EXPLORED jusqu'a qu'on backtrack au niveau au dessus
+ * Dans ce cas, c'est RFL qui se charge de restaurer ces valeurs
+ * Paramètre : - probleme correspond au probleme CSP à résoudre
+ * 			   - variable_courante est la variable etudié
+ *			   - valeur_courante est la valeur choisis pour la variable courante
+ */
 void remove_explored_value(CSP * probleme, int variable_courante, int valeur_courante){
 	probleme->Domain->domain_matrix[variable_courante][valeur_courante] = EXPLORED;
 	int cpt = 0;
@@ -19,6 +29,19 @@ void remove_explored_value(CSP * probleme, int variable_courante, int valeur_cou
 
 }
 
+/***
+ * Fonction utilisé par RFL. A chaque affectation essayé, on va maintenir la
+ * consistance d'arc et l'on réduit le domaine de la variable uniquement à la variable affecté
+ * Dans le cas ou l'affectation echoue, il faut donc restorer les valeurs des domaines
+ * potentiellement supprimé par AC8, et celle non affecté, dans l'etat NOT_AFFECTED
+ * On utilise la profondeur dans AC8 pour marqué les valeur filtré à chaque niveau de 
+ * parcours de l'arbre. Ainsi, quand on remonte, on sait quelles sont les valeurs restauré
+ * On utilise un offset pour pouvoir se reserver des valeurs spécifique de filtrage 
+ * Paramètre : - probleme correspond au probleme CSP à résoudre
+ * 			   - variable_courante est la variable etudié
+ *			   - valeur_courante est la valeur choisis pour la variable courante
+ *			   - profondeur est la profondeur courante du parcours de l'arbre de recherche
+ */
 void reload_domain(CSP * probleme, int variable_courante, int valeur_courante, int profondeur){
 	for(int i = 0; i < probleme->max_var; i++)
 		for(int d = 0; d < probleme->Domain->max_domain; d++){
@@ -26,7 +49,7 @@ void reload_domain(CSP * probleme, int variable_courante, int valeur_courante, i
 	    		probleme->Domain->domain_matrix[variable_courante][d] = 1;
 	    		probleme->Domain->taille_domaine[variable_courante]++;
 			}
-	    	if(probleme->Domain->domain_matrix[i][d] == -(10+profondeur)){
+	    	if(probleme->Domain->domain_matrix[i][d] == -(OFFSET+profondeur)){
 	    		probleme->Domain->domain_matrix[i][d] = 1;
 	    		probleme->Domain->taille_domaine[i]++;
 	    	}
@@ -68,18 +91,18 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
     variable_courante = 0;// choix_variable(probleme, heuristique, var_status, nb_var_instancie);
     tab_order_var[nb_var_instancie] = variable_courante;
 
-	while (nb_var_instancie < probleme->max_var)
-	{
+	while (nb_var_instancie < probleme->max_var){
 		var_status[variable_courante] = 1;
 		affect = 0;
 		//on instancie la variable courante
 		for (valeur_courante = 0; valeur_courante < probleme->Domain->max_domain; valeur_courante++)
 		{
 				if (probleme->Domain->domain_matrix[variable_courante][valeur_courante] == 1)
-				{				
+				{	
+					noeud_RFL++;			
 					reduce_domain(probleme, variable_courante, valeur_courante);
 					// on applique un algorithme de consistance d'arc
-					AC8(probleme, 10+nb_var_instancie, NULL); //le 2eme argument sert à retrouver quels sont les valeur filtrées, je rajoute 
+					AC8(probleme, OFFSET+nb_var_instancie, NULL); //le 2eme argument sert à retrouver quels sont les valeur filtrées, je rajoute 
 																	//le +10 pour me reserver des valeurs speciale au cas ou
 					
 					// si aucun domaine n'est vide on affecte cette valeur à la variable courante, sinon on passe à la prochaine valeur

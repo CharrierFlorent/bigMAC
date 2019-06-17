@@ -4,14 +4,15 @@
 #include "structure.h"
 #include "FC.h"
 #include "AC8.h"
+#include "RFL.h"
 #include "PC8.h"
 
 CSP * create_csp(CSP * csp, int * affectation, int niveau, int size);
 int consistent(CSP * csp, int * affectation, int niveau, int size);
+int consistent_rfl(CSP * csp, int * affectation, int niveau, int size);
 int not_complete(int * array, int size);
 int affecter(int * affectation, int niveau, int size);
 void solve_csp(CSP * csp);
 void bigmac(CSP *csp);
-
 
 #endif

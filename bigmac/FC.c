@@ -18,11 +18,11 @@ int cherche_domaine_vide (int *taille_domaine, int max_var, int *status)
 	for (int i=0; i<max_var; i++)
 	{
 		// si la variable n'est pas déja instanciée alors on regarde si son domaine est vide
-		if (status[i] == 0)
-		{
+		//if (status[i] == 0)
+		//{
 			if (taille_domaine[i] == 0)
 				return 1;
-		}
+		//}
 	}
 	return 0;
 }

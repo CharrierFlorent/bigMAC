@@ -88,37 +88,6 @@ int consistent(CSP * csp, int * affectation, int niveau, int size){
     AC8(csp_bivalent,1,NULL);
     PC8(csp_bivalent);
 
-    int element_1 = 2*(affectation[niveau]-1);
-    int element_2 = (element_1 == csp->Domain->max_domain-1) ? element_1 : element_1+1;
-	
-	reduce_domain(csp, niveau, element_1);
-
-	// on applique un algorithme de consistance d'arc
-	AC8(csp, OFFSET+niveau, NULL); 
-	
-	// si aucun domaine n'est vide on affecte cette valeur à la variable courante, sinon on passe à la prochaine valeur
-	if (cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
-		reload_domain(csp, niveau, element_1, niveau);
-		reduce_domain(csp, niveau, element_2);
-		AC8(csp, OFFSET+niveau, NULL); 
-	
-		if (cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
-			reload_domain(csp, niveau, element_1, niveau);
-			free_csp(csp_bivalent);
-			return 0;
-		}
-	}
-	else{
-		csp->Domain->domain_matrix[niveau][element_2] = 1;
-		csp->Domain->taille_domaine[niveau]++;
-		AC8(csp, OFFSET+niveau, NULL);
-		if (cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
-			reload_domain(csp, niveau, element_1, niveau);
-			free_csp(csp_bivalent);
-			return 0;
-		}
-	}
-
     for (int i=0; i < niveau+1; i++){
         vide = 1;
         for (int j=0; j < csp_bivalent->Domain->max_domain; j++)
@@ -237,7 +206,6 @@ void bigmac(CSP *csp){
         if(!succes_affectation){
             affectation[niveau] = 0;
             niveau--;
-            reload_domain(csp, niveau, 0, niveau);
             if(niveau < 0){
                 free(affectation);
                 printf("pas de solutions\n");
@@ -252,7 +220,6 @@ void bigmac(CSP *csp){
                 niveau++;    
             }
             else{
-            	reload_domain(csp, niveau, 0, niveau);
                 continue;
             }
         }
@@ -265,4 +232,5 @@ void bigmac(CSP *csp){
     free_csp(bigmac_csp);
     free(affectation);
 }
-	
+
+
