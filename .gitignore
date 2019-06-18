@@ -5,7 +5,7 @@
 .settings/
 .new/
 .old/
-./bigmac/plot/
+bigmac/plot/
 #files being edited
 *~
 
