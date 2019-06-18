@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include "bigmac.h"
 #include "generateur.h"
 #include "FC.h"
@@ -14,12 +15,21 @@ extern int noeud_BT;
 extern int noeud_RFL;
 FILE * glb_output_file;
 
+unsigned long long rdtsc(){
+    unsigned int lo,hi;
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return ((unsigned long long)hi << 32) | lo;
+}
+
 void test_BT(CSP * csp){
 	CSP * csp2 = create_csp_by_copy(csp);
 	CSP * csp3 = create_csp_by_copy(csp);
     fprintf(glb_output_file,"*************************************** BT ***************************************\n");
     int * inst = calloc(csp->max_var,sizeof(int));
 
+    struct timeval st, et;
+	gettimeofday(&st,NULL);
+    
     if(BT(csp2,inst, 0)){
         fprintf(glb_output_file,"solution : \n");
         for(int i=0; i < csp2->max_var; i++)
@@ -32,11 +42,17 @@ void test_BT(CSP * csp){
         else
         	fprintf(glb_output_file,"BT : Incorrect!\n");
     }
+	gettimeofday(&et,NULL);
+    fprintf(stdout,"noeud explores BT %d\n", noeud_BT);
+    int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);   
+    fprintf(stdout,"temps BT %d microsecondes\n", elapsed);   
+    
+    noeud_BT = 0;
+
     free_csp(csp2);
     free_csp(csp3);
     free(inst);
-    fprintf(stdout,"noeud explores BT %d\n", noeud_BT);   
-    noeud_BT = 0;
+
 }
 
 void test_FC(CSP * csp){
@@ -44,7 +60,10 @@ void test_FC(CSP * csp){
     int * inst = calloc(csp->max_var,sizeof(int));
     int * var = calloc(csp->max_var,sizeof(int));
     CSP * csp2 = create_csp_by_copy(csp);
-    //Forward_Checking(csp, inst, 42);
+    
+    struct timeval st, et;
+	gettimeofday(&st,NULL);
+
     if(FC(csp, inst, var, 0)){
         for(int i = 0; i < csp->max_var;i++)
             fprintf(glb_output_file,"x%d = %d \n", i, inst[i]);
@@ -54,32 +73,58 @@ void test_FC(CSP * csp){
         else
         	fprintf(glb_output_file,"FC : Incorrect!\n");
         }
-    free_csp(csp2);
-    free(inst);
-    free(var);
+    
     fprintf(stdout,"noeud explores FC %d\n", noeud_FC); 
     noeud_FC = 0;  
+
+    gettimeofday(&et,NULL);
+    int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);   
+    fprintf(stdout,"temps FC %d microsecondes\n", elapsed);  
+
+	free_csp(csp2);
+    free(inst);
+    free(var);
+
 }
 
 void test_RFL (CSP * csp)
 {
 	int * inst = calloc(csp->max_var,sizeof(int));
 	CSP * csp2 = create_csp_by_copy(csp);
+
+    struct timeval st, et;
+	gettimeofday(&st,NULL);
+
 	RFL (csp, inst, 42);
 	if(verify(csp2,inst))
         fprintf(glb_output_file,"RFL : correct!\n");
     else
     	fprintf(glb_output_file,"RFL : Incorrect!\n");
-    free_csp(csp2);
-    free(inst);
+
     fprintf(stdout,"noeud explores RFL %d\n", noeud_RFL);   
     noeud_RFL = 0;
+
+    gettimeofday(&et,NULL);
+    int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);   
+    fprintf(stdout,"temps RFL %d microsecondes\n", elapsed);  
+
+    free_csp(csp2);
+    free(inst);
+
 }
 
 void test_bigmac(CSP * csp){
+    struct timeval st, et;
+	gettimeofday(&st,NULL);
+
     bigmac(csp);
     fprintf(stdout,"noeud explores BM %d\n", noeud_BM);  
     noeud_BM = 0;  
+
+
+    gettimeofday(&et,NULL);
+    int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);   
+    fprintf(stdout,"temps BM %d microsecondes\n", elapsed);  
 }
 
 
@@ -112,8 +157,8 @@ void test_AC_PC(CSP * csp){
 }
 
 int main(int argc, char *argv[]){
-    srand(time(0));
-
+    srand(rdtsc());
+	
     
     if(argc < 5){
         fprintf(stdout,"Usage : %s <nb variables> <taille domaine> <densite> <durete>\n", argv[0]);
