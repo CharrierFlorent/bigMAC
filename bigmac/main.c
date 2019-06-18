@@ -182,7 +182,7 @@ int main(int argc, char *argv[]){
     CSP * csp3 = create_csp_by_copy(csp1);
     CSP * csp4 = create_csp_by_copy(csp1);
     
-    test_BT    (csp1);
+    //test_BT    (csp1);
     test_FC    (csp2);
     test_RFL   (csp3);
     test_bigmac(csp4);

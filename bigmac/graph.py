@@ -63,7 +63,7 @@ def expe(nb_var, dom, densite):
 		noeud_RFL[count] = node[2]
 		noeud_FC[count] = node[3]
 		time_BT[count] = time[0]
-		time_BM[count] = time[1]
+		time_BM[count] = time[1] #inversion BM et FC
 		time_RFL[count] = time[2]
 		time_FC[count] = time[3]
 		count += 1;
