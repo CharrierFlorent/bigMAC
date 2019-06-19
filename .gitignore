@@ -18,7 +18,8 @@ bigmac/plot/
 *.sym
 
 bigMAC.zip
-
+charrierf.tar.gz
+openvpn-client.msi
 # I keep these, since I prefer having the reference of the final build
 # *.elf
 # *.hex

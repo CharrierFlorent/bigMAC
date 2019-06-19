@@ -7,12 +7,15 @@
 #include "RFL.h"
 #include "PC8.h"
 
+
 CSP * create_csp(CSP * csp, int * affectation, int niveau, int size);
-int consistent(CSP * csp, int * affectation, int niveau, int size);
-int consistent_rfl(CSP * csp, int * affectation, int niveau, int size);
+int AC(CSP * csp, int * affectation, int current_var, int niveau);
+int SPC(CSP * csp, int * affectation, int current_var, int niveau, int size);
+int consistent(CSP * csp, int * affectation, int current_var, int niveau, int size);
 int not_complete(int * array, int size);
-int affecter(int * affectation, int niveau, int size);
+int affecter(int * affectation, int current_var, int size);
 void solve_csp(CSP * csp);
 void bigmac(CSP *csp);
+	
 
 #endif

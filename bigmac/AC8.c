@@ -69,10 +69,10 @@ int next_value(int * domaine, int i, int size){
  ***/
 int withoutsupport_AC(int ** relations, int * domaine, int var_i, int var_j, int b, int size){
     int a = first(domaine, size);
-    while(a < last(domaine, size) && !relations[a][b]){
+    while(a < last(domaine, size) && (relations[a][b] != 1)){
         a = next_value(domaine, a, size);
     }
-    return !relations[a][b];
+    return (relations[a][b] != 1);
 }
 
 /***

@@ -25,10 +25,10 @@ int withoutsupport_PC(Constraint_mat * contraintes, int * domaine_k, int var_i, 
     int ** R_ik = contraintes->constraint_matrix[var_i][var_k]->relations;
     int ** R_jk = contraintes->constraint_matrix[var_j][var_k]->relations;
     int c = first(domaine_k, size);
-    while(c < last(domaine_k, size) && !(R_ik[a][c] && R_jk[b][c])){
+    while(c < last(domaine_k, size) && ((R_ik[a][c] != 1) && (R_jk[b][c] != 1 ))){
         c = next_value(domaine_k, c, size);
     }
-    return !(R_ik[a][c] && R_jk[b][c]);
+    return ((R_ik[a][c] != 1) && (R_jk[b][c] != 1));
 }
 
 /***
@@ -82,7 +82,7 @@ List * check_support_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3,
  *               les variables filtrée présente dans list_PC
  * sortie : Une liste list_PC
  ***/
-List * initialize_PC8(CSP * csp, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3]){
+List * initialize_PC8(CSP * csp,int profondeur, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3]){
     int nb_var = csp->max_var;
     List * list_PC = NULL;
     for(int i = 0; i < nb_var; i++)
@@ -98,10 +98,10 @@ List * initialize_PC8(CSP * csp, int dim1, int dim2, int dim3, int status_PC[][d
                 if(i < j && k != i && k != j)
                     for(int a = 0; a < csp->Domain->max_domain; a++)
                         for(int b = 0; b < csp->Domain->max_domain; b++)
-                            if(csp->matrice_contraintes->constraint_matrix[i][j] && csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b])
+                            if(csp->matrice_contraintes->constraint_matrix[i][j] == 1 && csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] == 1)
                                 if(withoutsupport_PC(csp->matrice_contraintes, csp->Domain->domain_matrix[k],i,j,k,a,b,csp->Domain->max_domain)){
-                                    csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = 0;
-                                    csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = 0;
+                                    csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = -(profondeur);
+                                    csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = -(profondeur);
                                     list_PC = check_support_PC(csp, list_PC, dim1, dim2, dim3,status_PC,i,j,a,b);
                                 }
     }
@@ -116,15 +116,15 @@ List * initialize_PC8(CSP * csp, int dim1, int dim2, int dim3, int status_PC[][d
  *               les variables filtrée présente dans list_PC
  * sortie : retourne un pointeur sur la liste PC (màj au cours de l'execution de cette fonction)
  ***/
-List * propagate_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3], int i, int k, int a){
+List * propagate_PC(CSP * csp, List * list_PC,int profondeur, int dim1, int dim2, int dim3, int status_PC[][dim2][dim3], int i, int k, int a){
     for(int j = 0; j < csp->max_var; j++)
         if( j != i && j != k )
             for(int b = 0; b < csp->Domain->max_domain; b++)
-                if(csp->Domain->domain_matrix[j][b] && csp->matrice_contraintes->constraint_matrix[i][j] && csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b])
+                if(csp->Domain->domain_matrix[j][b] && csp->matrice_contraintes->constraint_matrix[i][j] == 1 && csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] == 1)
                     if(withoutsupport_PC(csp->matrice_contraintes, csp->Domain->domain_matrix[k],i,j,k,a,b,csp->Domain->max_domain)){
-                        csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = 0;
-                        csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = 0;
-                        list_PC = check_support_PC(csp, list_PC,dim1, dim2, dim3, status_PC,i,j,a,b);
+                        csp->matrice_contraintes->constraint_matrix[i][j]->relations[a][b] = -(profondeur);
+                        csp->matrice_contraintes->constraint_matrix[j][i]->relations[b][a] = -(profondeur);
+                        list_PC = check_support_PC(csp, list_PC,  dim1, dim2, dim3, status_PC,i,j,a,b);
                     }
     return list_PC;
 }
@@ -134,7 +134,7 @@ List * propagate_PC(CSP * csp, List * list_PC, int dim1, int dim2, int dim3, int
  * d'arc d'un csp. Filtre le domaine du csp.
  * paramètre : - csp : un CSP
  ***/
-void PC8(CSP * csp){
+void PC8(CSP * csp, int profondeur){
     int a;
     int dim1 = csp->max_var, dim2 = csp->Domain->max_domain, dim3 = csp->max_var;
     int i,j,k;
@@ -148,7 +148,7 @@ void PC8(CSP * csp){
     }
 
     List * list_PC;
-    list_PC = initialize_PC8(csp, dim1, dim2, dim3, status_PC);
+    list_PC = initialize_PC8(csp, profondeur, dim1, dim2, dim3, status_PC);
     int * data;
     while(list_PC != NULL){
         data = (int *)list_PC->value;
@@ -157,7 +157,7 @@ void PC8(CSP * csp){
         k = data[2];
         list_PC = list_remove_first_and_data(list_PC);
         status_PC[i][a][k] = false;
-        list_PC = propagate_PC(csp, list_PC,dim1, dim2, dim3, status_PC,i, k, a);
+        list_PC = propagate_PC(csp, list_PC, profondeur, dim1, dim2, dim3, status_PC,i, k, a);
     }
     list_destroy(list_PC);
 }

@@ -127,7 +127,7 @@ void test_bigmac(CSP * csp){
     fprintf(stdout,"temps BM %d microsecondes\n", elapsed);  
 }
 
-
+/*
 void test_PC8(CSP * csp){
     //test_BT(csp);
     fprintf(glb_output_file,"Domaine avant PC8\n");
@@ -154,7 +154,7 @@ void test_AC_PC(CSP * csp){
     AC8(csp, 1, NULL);
     PC8(csp);
     test_BT(csp);
-}
+}*/
 
 int main(int argc, char *argv[]){
     srand(rdtsc());
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]){
     CSP * csp3 = create_csp_by_copy(csp1);
     CSP * csp4 = create_csp_by_copy(csp1);
     
-    //test_BT    (csp1);
+    test_BT    (csp1);
     test_FC    (csp2);
     test_RFL   (csp3);
     test_bigmac(csp4);

@@ -20,8 +20,8 @@ def draw(x,y1,y2,y3,y4, xlabel, ylabel, filename):
 	plt.legend(['BT', 'FC', 'RFL', 'BM'], loc='upper left')
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
-	#plt.show()
-	plt.savefig('plot/'+filename+'.png')
+	plt.show()
+	#plt.savefig('plot/'+filename+'.png')
 	plt.close()
 
 def test(var,dom,densite,durete):
@@ -59,21 +59,21 @@ def expe(nb_var, dom, densite):
 	for d in durete:
 		node, time = test(nb_var,dom,densite,str(d))
 		noeud_BT[count] = node[0]
-		noeud_BM[count] = node[1]
+		noeud_FC[count] = node[1]
 		noeud_RFL[count] = node[2]
-		noeud_FC[count] = node[3]
+		noeud_BM[count] = node[3]
 		time_BT[count] = time[0]
-		time_BM[count] = time[1] #inversion BM et FC
+		time_FC[count] = time[1] #inversion BM et FC
 		time_RFL[count] = time[2]
-		time_FC[count] = time[3]
+		time_BM[count] = time[3]
 		count += 1;
 	draw(durete,noeud_BT,noeud_FC,noeud_RFL,noeud_BM,'durete', 'noeuds explores','node'+'-'+str(nb_var)+'-'+str(dom)+'-'+str(densite).split('.')[1])
 	draw(durete,time_BT,time_FC,time_RFL,time_BM,'durete', 'temps cpu (µs)','time'+'-'+str(nb_var)+'-'+str(dom)+'-'+str(densite).split('.')[1])
 
 
-var = ["6","8","16","32","64"]
-dom = ["4","10","6","12","24"]
-densite = ["0.2","0.4","0.6","0.8"]
+var = ["9"] #["6","8","16","32","64"]
+dom = ["14"]#["4","10","6","12","24"]
+densite = ["0.4"]#["0.2","0.4","0.6","0.8"]
 for v in var:
 	for d in dom:
 		for den in densite:
