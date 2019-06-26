@@ -97,6 +97,7 @@ List_i * check_support(CSP * csp, List_i * list_ac, int * status_AC, int i, int 
 			if (var_status == NULL || var_status[j] == 0)
 			{
 				csp->Domain->domain_matrix[j][b] = -profondeur;
+                
 				csp->Domain->taille_domaine[j]--;
 			}
             if(!status_AC[j]){
@@ -130,9 +131,9 @@ List_i * initialize_AC8(CSP * csp, int * status_AC, int profondeur, int *var_sta
 
     for(int i = 0; i < nb_var; i++){
         for(int j = 0; j < nb_var; j++){
-                if(!csp->matrice_contraintes->constraint_matrix[i][j])
-                    continue;
-                list_ac = check_support(csp, list_ac, status_AC,i,j, profondeur, var_status);
+            if(csp->matrice_contraintes->constraint_matrix[i][j] == NULL)
+                continue;
+            list_ac = check_support(csp, list_ac, status_AC,i,j, profondeur, var_status);
         }
     }
     return list_ac;

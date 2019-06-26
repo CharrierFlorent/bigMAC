@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include "bigmac.h"
+#include "bigRFL.h"
 #include "generateur.h"
 #include "FC.h"
 #include "BT.h"
@@ -13,6 +13,9 @@ extern int noeud_BM;
 extern int noeud_FC;
 extern int noeud_BT;
 extern int noeud_RFL;
+int fcc = 0;
+int rflc = 0;
+extern int bmc;
 FILE * glb_output_file;
 
 unsigned long long rdtsc(){
@@ -68,8 +71,10 @@ void test_FC(CSP * csp){
         for(int i = 0; i < csp->max_var;i++)
             fprintf(glb_output_file,"x%d = %d \n", i, inst[i]);
 
-        if(verify(csp2,inst))
+        if(verify(csp2,inst)){
             fprintf(glb_output_file,"FC : correct!\n");
+            fcc++;
+        }
         else
         	fprintf(glb_output_file,"FC : Incorrect!\n");
         }
@@ -96,8 +101,10 @@ void test_RFL (CSP * csp)
 	gettimeofday(&st,NULL);
 
 	RFL (csp, inst, 42);
-	if(verify(csp2,inst))
+	if(verify(csp2,inst)){
         fprintf(glb_output_file,"RFL : correct!\n");
+        rflc++;
+    }
     else
     	fprintf(glb_output_file,"RFL : Incorrect!\n");
 
@@ -131,19 +138,26 @@ void test_bigmac(CSP * csp){
 void test_PC8(CSP * csp){
     //test_BT(csp);
     fprintf(glb_output_file,"Domaine avant PC8\n");
-    //print_relation(csp);
+    print_relation(csp);
     fprintf(glb_output_file,"#########################################################################################################\n");
-    PC8(csp);
+csp->max_var = 4;
+        
+    PC8(csp,3);
+csp->max_var = 10;
+        
     fprintf(glb_output_file,"Domaine après PC8\n");
-    //print_relation(csp);
-    test_BT(csp);
+    print_relation(csp);
+    //test_BT(csp);
 }
 
 void test_AC8(CSP * csp){
 
         fprintf(glb_output_file,"Domaine avant AC8\n");
         print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
+        csp->max_var = 4;
         AC8(csp,1, NULL);
+        csp->max_var = 10;
+        
 
         fprintf(glb_output_file,"Domaine après AC8\n");
         print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
@@ -159,7 +173,7 @@ void test_AC_PC(CSP * csp){
 int main(int argc, char *argv[]){
     srand(rdtsc());
 	
-    
+ 
     if(argc < 5){
         fprintf(stdout,"Usage : %s <nb variables> <taille domaine> <densite> <durete>\n", argv[0]);
         exit(0);
@@ -174,16 +188,17 @@ int main(int argc, char *argv[]){
         glb_output_file = stdout;
     else
         glb_output_file = fopen("poubelle","w");
-
+int ar = 0;
+while(ar < 1){
     CSP * csp1 = generer_probleme(argv);
-    print_csp(csp1);
+    //print_csp(csp1);
     
     CSP * csp2 = create_csp_by_copy(csp1);
     CSP * csp3 = create_csp_by_copy(csp1);
     CSP * csp4 = create_csp_by_copy(csp1);
-    
-    test_BT    (csp1);
-    test_FC    (csp2);
+  
+    //test_BT    (csp1);
+    //test_FC    (csp2);
     test_RFL   (csp3);
     test_bigmac(csp4);
 
@@ -194,7 +209,13 @@ int main(int argc, char *argv[]){
     free_csp(csp2);
     free_csp(csp3);
     free_csp(csp4);
+    ar++;
     free_csp(csp1);
+}
+    /*printf("rfl : %d\n", rflc);
+    printf("bm : %d\n", bmc);
+    printf("fc : %d\n", fcc);*/
+
     fclose(glb_output_file);
 	return 0;
 }

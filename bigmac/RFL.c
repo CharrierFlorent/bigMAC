@@ -77,7 +77,6 @@ void reduce_domain(CSP * probleme, int variable_courante, int valeur_courante){
 void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 {
 	fprintf(glb_output_file,"**************RFL**************\n");
-
 	int variable_courante, valeur_courante;
 	int affect = 0;			// est égal à 1 si on a réussit à trouver une affectation de la variable courante, 0 sinon
 	int *var_status = malloc(sizeof(int) * probleme->max_var);	// var_status[0] = 1 signifie que la 1er variable est déja instancié, 0 sinon)

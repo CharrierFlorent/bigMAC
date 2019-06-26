@@ -13,7 +13,7 @@ int AC(CSP * csp, int * affectation, int current_var, int niveau);
 int SPC(CSP * csp, int * affectation, int current_var, int niveau, int size);
 int consistent(CSP * csp, int * affectation, int current_var, int niveau, int size);
 int not_complete(int * array, int size);
-int affecter(int * affectation, int current_var, int size);
+int affecter(CSP * csp, int * affectation, int current_var, int size);
 void solve_csp(CSP * csp);
 void bigmac(CSP *csp);
 	

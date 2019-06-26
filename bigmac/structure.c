@@ -139,6 +139,10 @@ void print_matrix(int ** matrix, int nb_col, int nb_row){
 	}
 }
 
+void print_domaine(CSP * csp){
+	print_matrix(csp->Domain->domain_matrix, csp->max_var, csp->Domain->max_domain);
+}
+
 void print_relation(CSP * csp){
     for(int i =0; i < csp->max_var;i++){
         for(int j = 0; j < csp->max_var; j++){

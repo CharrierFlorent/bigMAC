@@ -1,13 +1,13 @@
 structure.o: structure.c structure.h
-BT.o: BT.c BT.h structure.h generateur.h
-generateur.o: generateur.c generateur.h structure.h
-list.o: list.c list.h
-AC8.o: AC8.c AC8.h structure.h list_i.h
 PC8.o: PC8.c PC8.h structure.h list.h AC8.h list_i.h
-list_i.o: list_i.c list_i.h
-bigmac.o: bigmac.c bigmac.h BT.h structure.h generateur.h FC.h AC8.h \
- list_i.h RFL.h PC8.h list.h
-main.o: main.c bigmac.h BT.h structure.h generateur.h FC.h AC8.h list_i.h \
- RFL.h PC8.h list.h
+BT.o: BT.c BT.h structure.h generateur.h
+AC8.o: AC8.c AC8.h structure.h list_i.h
 RFL.o: RFL.c RFL.h generateur.h structure.h FC.h AC8.h list_i.h
+list.o: list.c list.h
+main.o: main.c bigRFL.h BT.h structure.h generateur.h FC.h AC8.h list_i.h \
+ RFL.h PC8.h list.h
+generateur.o: generateur.c generateur.h structure.h
+list_i.o: list_i.c list_i.h
 FC.o: FC.c FC.h generateur.h structure.h
+bigRFL.o: bigRFL.c bigRFL.h BT.h structure.h generateur.h FC.h AC8.h \
+ list_i.h RFL.h PC8.h list.h

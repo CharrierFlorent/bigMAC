@@ -13,11 +13,11 @@ from subprocess import Popen, PIPE
 #call(["./bigmac", "10", "4", "0.4", "0.4"])
 
 def draw(x,y1,y2,y3,y4, xlabel, ylabel, filename):
-	plt.plot(x,y1)
+	#plt.plot(x,y1)
 	plt.plot(x,y2)
 	plt.plot(x,y3)
 	plt.plot(x,y4)
-	plt.legend(['BT', 'FC', 'RFL', 'BM'], loc='upper left')
+	plt.legend(['FC', 'RFL', 'BM'], loc='upper left')
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	plt.show()

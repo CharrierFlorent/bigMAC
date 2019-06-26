@@ -43,6 +43,7 @@ void empty_matrix(int ** matrix, int nb_col, int nb_row);
 void print_matrix(int ** matrix, int nb_col, int nb_row);
 CSP * init_empty_csp(int max_domain, int max_var);
 int verify(CSP * csp, int * solution);
+void print_domaine(CSP * csp);
 void print_relation(CSP * csp);
 void print_csp(CSP * csp);
 void free_domain(DOMAIN * domain);
