@@ -102,7 +102,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 					noeud_RFL++;			
 					reduce_domain(probleme, variable_courante, valeur_courante);
 					// on applique un algorithme de consistance d'arc
-					AC8(probleme, OFFSET+nb_var_instancie, NULL); //le 2eme argument sert à retrouver quels sont les valeur filtrées, je rajoute 
+					AC8(probleme, OFFSET+nb_var_instancie, var_status); //le 2eme argument sert à retrouver quels sont les valeur filtrées, je rajoute 
 																	//le +10 pour me reserver des valeurs speciale au cas ou
 					
 					// si aucun domaine n'est vide on affecte cette valeur à la variable courante, sinon on passe à la prochaine valeur
@@ -153,7 +153,7 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			probleme->Domain->taille_domaine[variable_courante] = 1;
 			// on choisit la prochaine variable
 			tab_order_var[nb_var_instancie] = variable_courante;
-			variable_courante = choix_variable (probleme, heuristique, var_status, nb_var_instancie); 
+			variable_courante = choix_variable(probleme, heuristique, var_status, nb_var_instancie); 
 			nb_var_instancie++;
 		}
 	}

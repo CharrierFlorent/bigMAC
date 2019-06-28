@@ -1,0 +1,33 @@
+<instance format="XCSP3" type="COP">
+  <variables>
+    <array id="x" size="[11]"> 0..10 </array>
+  </variables>
+  <constraints>
+    <group>
+      <intension> ne(%0,%1) </intension>
+      <args> x[0] x[1] </args>
+      <args> x[0] x[3] </args>
+      <args> x[0] x[6] </args>
+      <args> x[0] x[8] </args>
+      <args> x[1] x[2] </args>
+      <args> x[1] x[5] </args>
+      <args> x[1] x[7] </args>
+      <args> x[2] x[4] </args>
+      <args> x[2] x[6] </args>
+      <args> x[2] x[9] </args>
+      <args> x[3] x[4] </args>
+      <args> x[3] x[5] </args>
+      <args> x[3] x[9] </args>
+      <args> x[4] x[7] </args>
+      <args> x[4] x[8] </args>
+      <args> x[5] x[10] </args>
+      <args> x[6] x[10] </args>
+      <args> x[7] x[10] </args>
+      <args> x[8] x[10] </args>
+      <args> x[9] x[10] </args>
+    </group>
+  </constraints>
+  <objectives>
+    <minimize type="maximum"> x[] </minimize>
+  </objectives>
+</instance>

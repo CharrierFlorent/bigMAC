@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<group name="general" description="General options">
+		<option name="E" description="replaces all the constraints in intention by equivalent constraints in extension">
+			<values type="none"/>
+		</option>
+ 		<option name="P2G" description="replaces some predicate constraints by global constraints">
+			<values type="none"/>
+		</option>
+		<option name="IF" description="specifies the input format of the file which contains the instance">
+			<values type="string" defaultvalue="xml">
+				<value name="csp" description="the file contains a binary CSP in the CSP format"/>
+				<value name="xml" description="the file contains a CSP in the XML format"/>
+				<value name="xml3" description="the file contains a CSP in the XML XCSP3-core format"/>
+				<value name="cnf" description="the file contains a CSP in the CNF SAT format"/>
+				<value name="wcsp" description="the file contains a CSP in the WCSP format (constraints in extension only)"/>
+			</values>
+		</option>
+		<option name="OF" description="specifies the output format">
+			<values type="string" defaultvalue="xml">
+				<value name="csp" description="the file is encoded into the CSP format (binary CSPs only)"/>
+				<value name="xml" description="the file is encoded into the XML XCSP2.1 format"/>
+				<value name="xml3" description="the file is encoded into the XML XCSP3-core format"/>
+        <value name="direct-sat" description="the file is encoded into the CNF SAT format thanks to the direct encoding"/>
+				<value name="log-sat" description="the file is encoded into the CNF SAT format thanks to the log encoding"/>
+				<value name="tuple-sat" description="the file is encoded into the CNF SAT format thanks to the tuple encoding"/>
+				<value name="wcsp" description="the file is encoded into the WCSP format"/>
+			</values>
+		</option>
+	</group>
+</config>

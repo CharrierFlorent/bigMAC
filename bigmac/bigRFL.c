@@ -207,29 +207,6 @@ int SPC(CSP * csp, int * affectation, int current_var, int niveau, int size){
 
     free_csp(csp_bivalent);
     return 1;
-	/*int tmp = csp->max_var;
-	csp->max_var = niveau;
-	csp->Domain->max_var = niveau;
-    PC8(csp,OFFSET+niveau);
-    if(check_pc_consistence(csp) == 0){
-    	printf("PC echoue\n");
-        print_matrix(csp->Domain->domain_matrix,csp->Domain->max_var,csp->Domain->max_domain);
-        print_relation(csp);
-
-        csp->max_var = tmp;
-        csp->Domain->max_var = tmp;
-        return 0;
-    }
-
-    AC8(csp,OFFSET+niveau,NULL);
-    if(cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
-        csp->max_var = tmp;
-        csp->Domain->max_var = tmp;
-        return 0;
-    }
-    csp->Domain->max_var = tmp;
-    csp->max_var = tmp;
-    return 1;*/
 
 }
 

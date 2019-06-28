@@ -71,9 +71,9 @@ def expe(nb_var, dom, densite):
 	draw(durete,time_BT,time_FC,time_RFL,time_BM,'durete', 'temps cpu (µs)','time'+'-'+str(nb_var)+'-'+str(dom)+'-'+str(densite).split('.')[1])
 
 
-var = ["9"] #["6","8","16","32","64"]
+var = ["10"] #["6","8","16","32","64"]
 dom = ["14"]#["4","10","6","12","24"]
-densite = ["0.4"]#["0.2","0.4","0.6","0.8"]
+densite = ["0.6"]#["0.2","0.4","0.6","0.8"]
 for v in var:
 	for d in dom:
 		for den in densite:

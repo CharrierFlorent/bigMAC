@@ -8,6 +8,7 @@
 #include "AC8.h"
 #include "PC8.h"
 #include "RFL.h"
+#include "parser.h"
 
 extern int noeud_BM;
 extern int noeud_FC;
@@ -170,51 +171,81 @@ void test_AC_PC(CSP * csp){
     test_BT(csp);
 }*/
 
-int main(int argc, char *argv[]){
-    srand(rdtsc());
-	
- 
-    if(argc < 5){
-        fprintf(stdout,"Usage : %s <nb variables> <taille domaine> <densite> <durete>\n", argv[0]);
+int usage(int argc, char *argv[]){
+
+    int verbal = 0, file = 0;  
+    for(int i = 0; i < argc; i++){
+        if(strcmp(argv[i],"-v") == 0)
+            verbal = 1;
+        if(strcmp(argv[i],"-f") == 0)
+            file = 1;
+
+    }
+
+    if(!verbal && !file && argc < 5){
+        fprintf(stdout,"Usage : %s <nb variables> <taille domaine> <densite> <durete> <options>\n ", argv[0]);
         exit(0);
     }
 
-    if(atof(argv[3]) > 1 || atof(argv[4]) > 1 || atof(argv[3]) < 0 || atof(argv[4]) < 0){
+
+    if(file && argc < 3){
+        fprintf(stdout,"Usage avec fichier : %s -f <filename>\n ", argv[0]);
+        exit(0);
+    }
+
+    if(!file && (atof(argv[3]) > 1 || atof(argv[4]) > 1 || atof(argv[3]) < 0 || atof(argv[4]) < 0)){
         fprintf(stdout,"Erreur argument, densite et durete doivent etre compris entre 0 et 1");
         exit(0);
     }
 
-    if(argc > 5 && strcmp(argv[5],"-v") == 0)
+    if(argc > 5 && verbal)
         glb_output_file = stdout;
     else
         glb_output_file = fopen("poubelle","w");
-int ar = 0;
-while(ar < 1){
-    CSP * csp1 = generer_probleme(argv);
-    //print_csp(csp1);
+
+    return file;
     
-    CSP * csp2 = create_csp_by_copy(csp1);
-    CSP * csp3 = create_csp_by_copy(csp1);
-    CSP * csp4 = create_csp_by_copy(csp1);
-  
-    //test_BT    (csp1);
-    //test_FC    (csp2);
-    test_RFL   (csp3);
-    test_bigmac(csp4);
-
-
-    //test_AC_PC(csp1);
-    //test_AC8(csp1);
-    //test_PC8(csp1);
-    free_csp(csp2);
-    free_csp(csp3);
-    free_csp(csp4);
-    ar++;
-    free_csp(csp1);
 }
-    /*printf("rfl : %d\n", rflc);
+
+int main(int argc, char *argv[]){
+    srand(rdtsc());
+    int ar = 0;
+    CSP * csp1; 
+    FILE * f;
+    while(ar < 1){
+        if(usage(argc, argv)){
+            f = fopen(argv[2], "r");
+            csp1 = create_csp_from_file(f);
+            fclose(f);
+        }
+        else
+            csp1 = generer_probleme(argv);
+        //print_csp(csp1);
+        
+        CSP * csp2 = create_csp_by_copy(csp1);
+        CSP * csp3 = create_csp_by_copy(csp1);
+        CSP * csp4 = create_csp_by_copy(csp1);
+      
+        test_BT    (csp1);
+        test_FC    (csp2);
+        test_RFL   (csp3);
+        test_bigmac(csp4);
+
+
+        //test_AC_PC(csp1);
+        //test_AC8(csp1);
+        //test_PC8(csp1);
+        free_csp(csp2);
+        free_csp(csp3);
+        free_csp(csp4);
+        free_csp(csp1);
+        ar++;
+    }
+    printf("rfl : %d\n", rflc);
     printf("bm : %d\n", bmc);
-    printf("fc : %d\n", fcc);*/
+    printf("fc : %d\n", fcc);
+
+    
 
     fclose(glb_output_file);
 	return 0;
