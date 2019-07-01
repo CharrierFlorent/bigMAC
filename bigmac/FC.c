@@ -67,6 +67,8 @@ int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_
 					for (int j=0; j<probleme->max_var; j++)
 						if (probleme->matrice_contraintes->constraint_matrix[i][j] != NULL)
 							nb_contraintes++;
+					if(nb_contraintes == 0)
+						nb_contraintes = probleme->max_var;
 					if (min > probleme->Domain->taille_domaine[i] / nb_contraintes)
 					{
 						var = i;
@@ -74,6 +76,9 @@ int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_
 					}
 				}
 			}
+			break;
+		case PROFONDEUR:
+			var = nb_var_instancie;
 			break;
 		default:
 			var = nb_var_instancie + 1;

@@ -405,7 +405,8 @@ void bigmac(CSP *csp){
     int current_var;
     while(not_complete(affectation, max_var) || !succes_consistence){
         //fprintf(glb_output_file,"niveau %d \n", niveau);
-        current_var = niveau;
+        //current_var = niveau;
+        current_var = choix_variable(csp, PROFONDEUR, ordre_affectation, niveau);
         ordre_affectation[niveau] = current_var;
         //printf("choix : %d\n", current_var);
        	succes_affectation = affecter(csp, affectation, current_var, taille_domaine);

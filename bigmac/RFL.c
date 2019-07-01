@@ -23,7 +23,7 @@ void remove_explored_value(CSP * probleme, int variable_courante, int valeur_cou
 	probleme->Domain->domain_matrix[variable_courante][valeur_courante] = EXPLORED;
 	int cpt = 0;
 	for (int j=0; j<probleme->Domain->max_domain; j++){
-		if(probleme->Domain->domain_matrix[variable_courante][j] == EXPLORED)
+		if(probleme->Domain->domain_matrix[variable_courante][j] == EXPLORED ||probleme->Domain->domain_matrix[variable_courante][j] == NOT_AFFECTED || probleme->Domain->domain_matrix[variable_courante][j] < 0)
 			cpt++;
 	}
 	probleme->Domain->taille_domaine[variable_courante] = probleme->Domain->max_domain - cpt;
@@ -49,12 +49,15 @@ void reload_domain(CSP * probleme, int variable_courante, int valeur_courante, i
 			if(i == variable_courante && (probleme->Domain->domain_matrix[variable_courante][d] == NOT_AFFECTED)){
 	    		probleme->Domain->domain_matrix[variable_courante][d] = 1;
 	    		probleme->Domain->taille_domaine[variable_courante]++;
+
 			}
 	    	if(probleme->Domain->domain_matrix[i][d] == -(OFFSET+profondeur)){
 	    		probleme->Domain->domain_matrix[i][d] = 1;
 	    		probleme->Domain->taille_domaine[i]++;
 	    	}
+
 		}
+
 }
 
 void reduce_domain(CSP * probleme, int variable_courante, int valeur_courante){
@@ -95,14 +98,12 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 		var_status[variable_courante] = 1;
 		affect = 0;
 		//on instancie la variable courante
-		for (valeur_courante = 0; valeur_courante < probleme->Domain->max_domain; valeur_courante++)
-		{
-				if (probleme->Domain->domain_matrix[variable_courante][valeur_courante] == 1)
-				{	
+		for (valeur_courante = 0; valeur_courante < probleme->Domain->max_domain; valeur_courante++){
+				if (probleme->Domain->domain_matrix[variable_courante][valeur_courante] == 1){	
 					noeud_RFL++;			
 					reduce_domain(probleme, variable_courante, valeur_courante);
 					// on applique un algorithme de consistance d'arc
-					AC8(probleme, OFFSET+nb_var_instancie, var_status); //le 2eme argument sert à retrouver quels sont les valeur filtrées, je rajoute 
+					AC8(probleme, OFFSET+nb_var_instancie, NULL); //le 2eme argument sert à retrouver quels sont les valeur filtrées, je rajoute 
 																	//le +10 pour me reserver des valeurs speciale au cas ou
 					
 					// si aucun domaine n'est vide on affecte cette valeur à la variable courante, sinon on passe à la prochaine valeur
@@ -115,8 +116,8 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 					}
 				}
 		}
-		if (affect == 0)
-		{
+
+		if (affect == 0){
 			// si on revient au début et qu'on a pas réussi à affecter la variable alors pas de solution
 			if (variable_courante == tab_order_var[0])
             {
@@ -143,17 +144,19 @@ void RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique)
 			reload_domain(probleme, variable_courante, sol[variable_courante], nb_var_instancie);
 			remove_explored_value(probleme, variable_courante, sol[variable_courante]);
 		}
-		else
-		{
-			sol[nb_var_instancie] = valeur_courante; 
+		else{
+			sol[variable_courante] = valeur_courante; 
 			// si on a réussit à affecter une valeur à la variable alors on supprime toute les autres valeurs du domaine de la variable
-			for (int j=0; j<probleme->Domain->max_domain; j++)
+			/*for (int j=0; j<probleme->Domain->max_domain; j++)
 				if (probleme->Domain->domain_matrix[variable_courante][j] == 1 && j != valeur_courante)
 					probleme->Domain->domain_matrix[variable_courante][j] = NOT_AFFECTED;
-			probleme->Domain->taille_domaine[variable_courante] = 1;
+			probleme->Domain->taille_domaine[variable_courante] = 1;*/
 			// on choisit la prochaine variable
 			tab_order_var[nb_var_instancie] = variable_courante;
 			variable_courante = choix_variable(probleme, heuristique, var_status, nb_var_instancie); 
+			if(variable_courante == -1){
+				
+			}
 			nb_var_instancie++;
 		}
 	}

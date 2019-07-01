@@ -198,7 +198,7 @@ int usage(int argc, char *argv[]){
         exit(0);
     }
 
-    if(argc > 5 && verbal)
+    if(verbal)
         glb_output_file = stdout;
     else
         glb_output_file = fopen("poubelle","w");
@@ -219,7 +219,7 @@ int main(int argc, char *argv[]){
             fclose(f);
         }
         else
-            csp1 = generer_probleme(argv);
+        csp1 = generer_probleme(argv);
         //print_csp(csp1);
         
         CSP * csp2 = create_csp_by_copy(csp1);

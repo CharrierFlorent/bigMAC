@@ -4,7 +4,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
-typedef enum {MIN_DOMAINE, DOMAINE_DEGRE} HEURISTIQUE;
+typedef enum {MIN_DOMAINE, DOMAINE_DEGRE, PROFONDEUR} HEURISTIQUE;
 
 typedef struct{
 	int ** domain_matrix;
