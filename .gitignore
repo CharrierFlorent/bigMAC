@@ -6,7 +6,9 @@
 .new/
 .old/
 bigmac/plot/
-.instances/
+instances/
+test/
+result/
 #files being edited
 *~
 
