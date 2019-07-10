@@ -64,10 +64,15 @@ void reduire_relations(CSP * csp, int * affectation, int current_var, int niveau
 void reduire_domaine(CSP * csp, int * affectation, int current_var, int niveau){
 
     int element_1 = 2*(affectation[current_var]-1);
-    int element_2 = (element_1 == csp->Domain->max_domain-1) ? element_1 : element_1+1;        
-    reduce_domain(csp, current_var, element_1);
+    int element_2 = (element_1 == csp->Domain->max_domain-1) ? element_1 : element_1+1;     
+    for(int d = 0; d < csp->Domain->max_domain; d++)
+        if(d != element_1 && d!= element_2 && csp->Domain->domain_matrix[current_var][d] == 1){
+            csp->Domain->domain_matrix[current_var][d] = NOT_AFFECTED;
+            csp->Domain->taille_domaine[current_var]--;
+        }   
+  /*  reduce_domain(csp, current_var, element_1);
     csp->Domain->domain_matrix[current_var][element_2] = 1;
-    csp->Domain->taille_domaine[current_var]++;
+    csp->Domain->taille_domaine[current_var]++;*/
 }
 
 
@@ -391,13 +396,13 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
         elapsed = ((et->tv_sec - st->tv_sec) * 1000000) + (et->tv_usec - st->tv_usec);  
         if(elapsed > 120000000)
             return -1;  
-
         //choix variable
     	if(not_complete(var_status, max_var)){
 	        current_var = choix_variable(csp, heuristique, var_status, niveau);
 	        var_status[current_var] = 0;
 	        ordre_affectation[niveau] = current_var;
 	    }
+
 		succes_affectation = affecter(csp, affectation, current_var, taille_domaine);
     	if(succes_affectation && not_in_domain(csp,affectation,current_var))
     		continue;
@@ -407,6 +412,7 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
 	    	var_status[current_var] = 1;
             reduire_domaine(csp, affectation, current_var, niveau);
            	reduire_relations(csp, affectation, current_var, niveau);
+
             succes_consistence = consistent(csp, affectation, ordre_affectation, current_var, niveau, taille_domaine);
             
             if(succes_consistence){
@@ -414,6 +420,7 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
                 niveau++;
             }
             else{	
+            	var_status[current_var] = 0;
                 reload_relations(csp, niveau);
                 reload_domain(csp, current_var, 0,niveau);
             }
@@ -421,6 +428,7 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
         else{
             affectation[current_var] = 0;
             var_status[current_var] = 0;
+
 		    niveau--;
          	if(niveau < 0){
             	free(ordre_affectation);
@@ -431,11 +439,13 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
             }
             reload_relations(csp, niveau);
             reload_domain(csp, ordre_affectation[niveau], 0, niveau);
+            var_status[ordre_affectation[niveau]] = 0;
         }
     }
 
     //CSP * bigmac_csp = create_csp(csp, affectation, csp->max_var-1, taille_domaine);
-
+    /*for(int i = 0; i < csp->max_var;i++)
+    	reduire_domaine(csp, affectation, i, 0);*/
     //print_matrix(bigmac_csp->Domain->domain_matrix,bigmac_csp->Domain->max_var,bigmac_csp->Domain->max_domain);
     solve_csp(csp, csp2, st, et);
     free_csp(csp2);

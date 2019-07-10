@@ -82,9 +82,9 @@ void test_FC(CSP * csp){
         	fprintf(glb_output_file,"FC : Incorrect!\n");
     }
     if(result == -1){
-        fprintf(stdout,"noeud explores FC -1\n");
+        fprintf(stdout,"noeud explores FC %d\n", noeud_FC);
         fprintf(stdout,"temps FC -1 microsecondes\n");  
-        fprintf(stdout,"consistency check FC -1 \n");  
+        fprintf(stdout,"consistency check FC %d \n", consistancy);  
         free_csp(csp2);
         free(inst);
         free(var);
@@ -114,9 +114,9 @@ void test_RFL (CSP * csp)
 
 	int result = RFL(csp, inst, MIN_DOMAINE, &st, &et);
     if(result == -1){
-        fprintf(stdout,"noeud explores RFL -1\n");
+        fprintf(stdout,"noeud explores RFL %d\n", noeud_RFL);
         fprintf(stdout,"temps RFL -1 microsecondes\n");  
-        fprintf(stdout,"consistency check RFL -1 \n");  
+        fprintf(stdout,"consistency check RFL %d \n", consistancy);  
         free_csp(csp2);
         free(inst);
         return;
@@ -148,9 +148,9 @@ void test_bigmac(CSP * csp){
     consistancy = 0;
     int result = bigmac(csp, MIN_DOMAINE, &st, &et);
     if(result == -1){
-        fprintf(stdout,"noeud explores BM -1\n"); 
+        fprintf(stdout,"noeud explores BM %d\n", noeud_BM); 
         fprintf(stdout,"temps BM -1 microsecondes\n");    
-        fprintf(stdout,"consistency check BM -1 \n");
+        fprintf(stdout,"consistency check BM %d\n", consistancy);
         return;
     }
     fprintf(stdout,"noeud explores BM %d\n", noeud_BM);  
@@ -201,7 +201,7 @@ int usage(int argc, char *argv[]){
 }
 
 int main(int argc, char *argv[]){
-    srand(rdtsc());
+   	srand(rdtsc());
     int ar = 0;
     CSP * csp1; 
     FILE * f;
