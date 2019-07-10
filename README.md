@@ -9,6 +9,7 @@ Codé en C. Compile sous gcc.
 make pour compiler le projet.
 
 ./bigmac <nb variables> <taille max domaine> <densité> <durete> <option> pour executer le programme ensuite sur un csp aléatoire
+  
 ./bigmac -f <path/to/file> <option> pour executer le programme sur un fichier
   
   Option : -v : Verbal, affiche differentes informations sur la résolution
