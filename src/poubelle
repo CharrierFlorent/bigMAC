@@ -1,47 +1,16 @@
-construction d'un csp avec : N = 10, D = 15 m  = 27, R = 90 Densite = 0.600000 et durete = 0.600000
+construction d'un csp avec : N = 10, D = 8 m  = 27, R = 25 Densite = 0.600000 et durete = 0.600000
 
-*************************************** FC ***************************************
-x0 = 3 
-x1 = 4 
-x2 = 7 
-x3 = 10 
-x4 = 2 
-x5 = 2 
-x6 = 12 
-x7 = 6 
-x8 = 5 
-x9 = 3 
-FC : correct!
 **************RFL**************
-solution : 
-x0 = 3 
-x1 = 4 
-x2 = 7 
-x3 = 10 
-x4 = 2 
-x5 = 2 
-x6 = 12 
-x7 = 6 
-x8 = 5 
-x9 = 3 
-RFL : correct!
+tab order 0
+pas de solution
+RFL : Incorrect!
 
 *****************************BIGMAC***************************
-solution : 
-x0 = 3 
-x1 = 4 
-x2 = 7 
-x3 = 10 
-x4 = 2 
-x5 = 2 
-x6 = 12 
-x7 = 6 
-x8 = 5 
-x9 = 3 
-BM : correct!
-rect!
-t!
+pas de solutions
+**************RFL**************
+tab order 0
+pas de solution
+RFL : Incorrect!
 
-!
-t!
-t!
+*****************************BIGMAC***************************
+pas de solutions

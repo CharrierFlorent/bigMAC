@@ -38,7 +38,7 @@ int cherche_domaine_vide (int *taille_domaine, int max_var, int *status)
 int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_var_instancie)
 {
 	int var = -1, min, nb_contraintes;
-
+	double mini;
 	switch (heuristique)
 	{
 		case MIN_DOMAINE:
@@ -57,7 +57,7 @@ int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_
 			}
 			break;
 		case DOMAINE_DEGRE:
-			min = probleme->Domain->max_domain+1;
+			mini = (double)probleme->Domain->max_domain+1;
 			for (int i=0; i<probleme->max_var; i++)
 			{
 				nb_contraintes = 0;
@@ -68,14 +68,15 @@ int choix_variable (CSP *probleme, HEURISTIQUE heuristique, int *status, int nb_
 						if (probleme->matrice_contraintes->constraint_matrix[i][j] != NULL)
 							nb_contraintes++;
 					if(nb_contraintes == 0)
-						nb_contraintes = probleme->max_var;
-					if (min > probleme->Domain->taille_domaine[i] / nb_contraintes)
+						nb_contraintes = 1;
+					if (mini > probleme->Domain->taille_domaine[i] / nb_contraintes)
 					{
 						var = i;
-						min = probleme->Domain->taille_domaine[i] / nb_contraintes;
+						mini = probleme->Domain->taille_domaine[i] / nb_contraintes;
 					}
 				}
 			}
+			min = (int)mini;
 			break;
 		case PROFONDEUR:
 			var = nb_var_instancie;

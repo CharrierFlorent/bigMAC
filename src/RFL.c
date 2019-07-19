@@ -4,6 +4,7 @@
  */
 #include "RFL.h"
 #include "AC8.h"
+#include "constant.h"
 
 extern FILE * glb_output_file;
 int noeud_RFL = 0;
@@ -102,8 +103,11 @@ int RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique, struct timeval * s
 			if (probleme->Domain->domain_matrix[variable_courante][valeur_courante] == 1){
 				gettimeofday(et,NULL);
 				elapsed = ((et->tv_sec - st->tv_sec) * 1000000) + (et->tv_usec - st->tv_usec);  
-				if(elapsed > 120000000)
+				if(elapsed > 6*TIMEOUT){
+					free(var_status);
+					free(tab_order_var);
 					return -1;		
+				}
 				noeud_RFL++;			
 				reduce_domain(probleme, variable_courante, valeur_courante);
 				// on applique un algorithme de consistance d'arc
@@ -170,7 +174,7 @@ int RFL (CSP *probleme , int * sol,  HEURISTIQUE heuristique, struct timeval * s
 	for(int i=0; i < probleme->max_var; i++)
 		fprintf(glb_output_file,"x%d = %d \n",i,sol[i]);
 			
-	return 1;
 	free(var_status);
 	free(tab_order_var);
+	return 1;
 }

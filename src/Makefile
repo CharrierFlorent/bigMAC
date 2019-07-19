@@ -36,6 +36,6 @@ depend: $(SOURCES) $(HEADERS)
 	gcc $(CFLAGS) -MM $(SOURCES) | tee depend
 
 valgrind: 
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./$(EXEC)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./$(EXEC) 10 15 0.4 0.4
 
 -include depend

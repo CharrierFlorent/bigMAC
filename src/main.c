@@ -104,16 +104,18 @@ void test_FC(CSP * csp){
 
 }
 
-void test_RFL (CSP * csp)
+void test_RFL(CSP * csp, HEURISTIQUE heuristique)
 {
+	noeud_RFL = 0;
 	int * inst = calloc(csp->max_var,sizeof(int));
 	CSP * csp2 = create_csp_by_copy(csp);
     consistancy = 0;
     struct timeval st, et;
 	gettimeofday(&st,NULL);
 
-	int result = RFL(csp, inst, MIN_DOMAINE, &st, &et);
+	int result = RFL(csp, inst, heuristique, &st, &et);
     if(result == -1){
+    	fprintf(stdout,"Timeout\n");  
         fprintf(stdout,"noeud explores RFL %d\n", noeud_RFL);
         fprintf(stdout,"temps RFL -1 microsecondes\n");  
         fprintf(stdout,"consistency check RFL %d \n", consistancy);  
@@ -122,41 +124,44 @@ void test_RFL (CSP * csp)
         return;
     }
 
-	if(verify(csp2,inst)){
+    if(verify(csp2,inst)){
+    	fprintf(stdout,"Consistent\n");
         fprintf(glb_output_file,"RFL : correct!\n");
         rflc++;
     }
-    else
+    else{
     	fprintf(glb_output_file,"RFL : Incorrect!\n");
+    	fprintf(stdout,"Inconsistent\n");
+    }
 
     fprintf(stdout,"noeud explores RFL %d\n", noeud_RFL);   
-    noeud_RFL = 0;
+
 
     gettimeofday(&et,NULL);
     int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);   
     fprintf(stdout,"temps RFL %d microsecondes\n", elapsed);  
     fprintf(stdout,"consistency check RFL %d \n", consistancy);  
+
     free_csp(csp2);
     free(inst);
 
 }
 
-void test_bigmac(CSP * csp){
+void test_bigmac(CSP * csp, HEURISTIQUE heuristique){
 
     struct timeval st, et;
 	gettimeofday(&st,NULL);
     consistancy = 0;
-    int result = bigmac(csp, MIN_DOMAINE, &st, &et);
+    noeud_BM = 0; 
+    int result = bigmac(csp, heuristique, &st, &et);
     if(result == -1){
+    	fprintf(stdout,"Timeout\n");
         fprintf(stdout,"noeud explores BM %d\n", noeud_BM); 
         fprintf(stdout,"temps BM -1 microsecondes\n");    
         fprintf(stdout,"consistency check BM %d\n", consistancy);
         return;
     }
-    fprintf(stdout,"noeud explores BM %d\n", noeud_BM);  
-    noeud_BM = 0;  
-
-
+    fprintf(stdout,"noeud explores BM %d\n", noeud_BM);   
     gettimeofday(&et,NULL);
     int elapsed = ((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec);   
     fprintf(stdout,"temps BM %d microsecondes\n", elapsed);  
@@ -205,25 +210,27 @@ int main(int argc, char *argv[]){
     int ar = 0;
     CSP * csp1; 
     FILE * f;
-    while(ar < 1000){
+    while(ar < 1){
         if(usage(argc, argv)){
             f = fopen(argv[2], "r");
-            printf("%s\n", argv[2]);
+            printf("%s", argv[2]);
             csp1 = create_csp_from_file(f);
+            printf(" %d\n", csp1->Domain->max_domain);
             fclose(f);
         }
         else
-        csp1 = generer_probleme(argv);
-        //print_csp(csp1);
+        	csp1 = generer_probleme(argv);
         
         CSP * csp2 = create_csp_by_copy(csp1);
         CSP * csp3 = create_csp_by_copy(csp1);
         CSP * csp4 = create_csp_by_copy(csp1);
       
         //test_BT    (csp1);
-        test_FC    (csp2);
-        test_RFL   (csp3);
-        test_bigmac(csp4);
+        //test_FC    (csp2);
+        test_RFL   (csp1, MIN_DOMAINE);
+        test_bigmac(csp2, MIN_DOMAINE);
+		test_RFL   (csp3, DOMAINE_DEGRE);
+        test_bigmac(csp4, DOMAINE_DEGRE);
 
 
         //test_AC_PC(csp1);
@@ -235,9 +242,10 @@ int main(int argc, char *argv[]){
         free_csp(csp1);
         ar++;
     }
+    /*
     printf("rfl : %d\n", rflc);
     printf("bm : %d\n", bmc);
-    printf("fc : %d\n", fcc);
+    printf("fc : %d\n", fcc);*/
 
     
 

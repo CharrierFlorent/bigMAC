@@ -1,4 +1,5 @@
 #include "bigRFL.h"
+#include "constant.h"
 
 extern FILE * glb_output_file;
 int noeud_BM = 0;
@@ -101,6 +102,31 @@ int check_pc_consistence(CSP* csp){
          
 }
 
+void SAC(CSP * csp, int current_var, int niveau, int * affectation, int * ordre_affectation){
+	int vide1 = 0, vide2 = 0;
+	int element_1 = 2*(affectation[current_var]-1);
+    int element_2 = (element_1 == csp->Domain->max_domain-1) ? element_1 : element_1+1;
+    
+    reduce_domain(csp, current_var, element_1);
+    AC8(csp, OFFSET+niveau, NULL); 
+    if (cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
+    	reload_domain(csp, ordre_affectation[niveau], 0, niveau);
+        csp->Domain->domain_matrix[current_var][element_1] = -(niveau+OFFSET);
+    	vide1 = 1;
+    }   
+
+	csp->Domain->domain_matrix[current_var][element_2] = 1;
+	reduce_domain(csp, current_var, element_2);
+    AC8(csp,OFFSET+niveau, NULL); 
+    if (cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
+    	reload_domain(csp, ordre_affectation[niveau], 0, niveau);
+        csp->Domain->domain_matrix[current_var][element_2] = -(niveau+OFFSET);
+    	vide2 = 1;
+    }   
+
+    return !(vide1 && vide2);
+}
+
 /***
  * Verifie la consistence d'arc du csp
  * paramètre : - csp : un csp
@@ -123,7 +149,6 @@ int AC(CSP * csp, int * affectation, int current_var, int niveau){
         return 0;
     }   
     return 1;
-
 }
 
 void copy_csp_to_bivalent_v2(CSP * csp, CSP * csp_bivalent, int * affectation, int * ordre_affectation, int niveau){
@@ -286,6 +311,7 @@ int consistent(CSP * csp, int * affectation, int * ordre_affectation, int curren
 
 
     AC8(csp, OFFSET+niveau,NULL);
+    //SAC(csp,current_var,niveau,  affectation, ordre_affectation );
     if(cherche_domaine_vide(csp->Domain->taille_domaine, csp->Domain->max_var, NULL)){
     	//printf("echec AC8\n");
         return 0;
@@ -331,7 +357,6 @@ int affecter(CSP * csp, int * affectation, int current_var, int size){
 void solve_csp(CSP * csp, CSP* csp2, struct timeval * st, struct timeval * et){
     int * inst = calloc(csp->max_var,sizeof(int));	
     int * var = calloc(csp->max_var,sizeof(int));
-
     if(FC(csp, inst, var, 0, st, et)){
         fprintf(glb_output_file,"solution : \n");
         for(int i=0; i < csp->max_var; i++)
@@ -340,10 +365,13 @@ void solve_csp(CSP * csp, CSP* csp2, struct timeval * st, struct timeval * et){
 
         if(verify(csp2,inst)){
             fprintf(glb_output_file,"BM : correct!\n");
+            fprintf(stdout, "Consistent\n");
             bmc++;
         }
-        else
+        else{
+        	fprintf(stdout, "Inconsistent\n");
             fprintf(glb_output_file,"BM : Incorrect!\n");
+        }
     }
     free(inst);
     free(var);
@@ -387,14 +415,14 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
      * on test la valeur suivante, s'il n'y a plus de valeur suivante possible, on remonte d'un cran
      * On s'arrete quand on a explorer tout l'arbre
      */
-    int current_var;
+    int current_var = 0;
     int elapsed;
     
     while(not_complete(var_status, max_var) || !succes_consistence){
     	//timeout
 		gettimeofday(et,NULL);
         elapsed = ((et->tv_sec - st->tv_sec) * 1000000) + (et->tv_usec - st->tv_usec);  
-        if(elapsed > 120000000)
+        if(elapsed > 6*TIMEOUT)
             return -1;  
         //choix variable
     	if(not_complete(var_status, max_var)){
@@ -435,6 +463,7 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
             	free(var_status);
                 free(affectation);
                 fprintf(glb_output_file,"pas de solutions\n");
+                fprintf(stdout, "Inconsistent\n");
                 return 0;
             }
             reload_relations(csp, niveau);
@@ -450,6 +479,7 @@ int bigmac(CSP *csp,HEURISTIQUE heuristique, struct timeval * st, struct timeval
     solve_csp(csp, csp2, st, et);
     free_csp(csp2);
     //free_csp(bigmac_csp);
+    free(var_status);
     free(affectation);
     free(ordre_affectation);
     return 1;
